@@ -1,0 +1,23 @@
+#Pulledpork Sandwich
+
+Smash, and layer up that pulledpork config to support multiple sensors.
+
+## Install:
+
+* Ruby 1.9.* 
+
+* RubyGems 
+
+** bundle install
+
+* Perl
+
+* Pulledpork.pl from googlecode (0.6.x)
+
+**  https://code.google.com/p/pulledpork
+
+## LICENSE
+
+Copyright 2014 Scott MacGregor 
+
+GNU GPLv2
