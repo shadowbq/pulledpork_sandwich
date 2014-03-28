@@ -1,13 +1,24 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 
-begin
-  require 'rubygems'
-  require 'bundler'
-  Bundler.setup(:default)
-rescue ::Exception => e
+if RUBY_VERSION >= '1.9.2'
+  
+  begin
+    require 'rubygems'
+    require 'bundler'
+    Bundler.setup(:default)
+  rescue ::Exception => e
+  end
+
+  # Executable with absolute path to lib for hacking and development
+  $LOAD_PATH.unshift(File.dirname(File.realpath(__FILE__)) + '/../lib')
+  require File.join(File.dirname(__FILE__), '..', 'lib', 'pulledpork_sandwich', 'cli')
+
+  require 'pulledpork_sandwich'
+
+  Pulledpork_Sandwich::CLI.invoke
+
+else
+  puts 'RuboCop supports only Ruby 1.9.2+'
+  exit(-1)
 end
-
-# Executable with absolute path to lib for hacking and development
-require File.join(File.dirname(__FILE__), '..', 'lib', 'pulledpork_sandwich', 'cli')
-
-Pulledpork_Sandwich::CLI.invoke

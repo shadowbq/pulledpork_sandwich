@@ -1,8 +1,5 @@
 
 require 'optparse'
-require 'pastenum'
-require 'colored'
-require 'highline/import'
 
 module Pulledpork_Sandwich
   Pulledpork_Sandwich::BASEDIR = '/opt/pulledpork_sandwich'
@@ -19,8 +16,8 @@ module Pulledpork_Sandwich
       
       options[:scaffold] = nil
       options[:nopush] = false
-      options[:sandwich_conf] = = "#{BASEDIR}/etc/sandwich.conf"
-      options[:verbose] = Pastenum::Defaults::Verbose
+      options[:sandwich_conf] = "#{BASEDIR}/etc/sandwich.conf"
+      options[:verbose] = false # Fix Sandwich Conf loading order.. 
       
       opt_parser = OptionParser.new do |opt|
         opt.banner = "Usage: pulledpork_sandwich [OPTIONS] "
