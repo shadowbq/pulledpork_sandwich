@@ -1,6 +1,6 @@
 module Pulledpork_Sandwich
   
-  class PulledConf
+  class SandwichWrapper
 
     def initialize( sensor="example-snort" )
       @sensor = sensor
@@ -59,6 +59,11 @@ module Pulledpork_Sandwich
       stdout, stderr = shellex("pulledpork.pl -c #{BASEDIR}/etc/sensors/#{@sensor}/pulledpork.dyn.conf")
     end
 
+    def package
+      tgz = Zlib::GzipWriter.new(File.open("#{BASEDIR}/tmp/#{@name}_sig_package.tgz", 'wb'))
+      @filelist = Dir["#{BASEDIR}/etc/sensors/#{@name}/export/*.rules", "#{BASEDIR}/etc/sensors/#{@name}/export/*.map"] 
+      Minitar.pack(@filelist, tgz) 
+    end
 
   end
 

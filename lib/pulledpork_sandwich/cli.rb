@@ -100,7 +100,7 @@ module Pulledpork_Sandwich
       #check for scaffold of sensor.
       # Read config for sensorname, if not fail and tell user to write config entry.
 
-      pork = PulledConf.new(sensor.name)
+      pork = SandwichWrapper.new(sensor.name)
 
       #Merge Global Policy with Sensor Policy
       print "m" if verbose 
@@ -119,7 +119,7 @@ module Pulledpork_Sandwich
 
       #TAR.GZ results 
       print "z" if verbose 
-      sensor.package
+      pork.package
       puts "." if verbose
 
       #SCP to corresponding sensor
