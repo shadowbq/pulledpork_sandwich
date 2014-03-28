@@ -26,10 +26,10 @@ module Pulledpork_Sandwich
 
   class EmptySandwichConfig < StandardError; end
   
-  require 'pulledpork_sandwich/SensorCollection'
-  require 'pulledpork_sandwich/Sensor'
-  require 'pulledpork_sandwich/SandwichConf'
-  require 'pulledpork_sandwich/PulledConf'
+  require 'pulledpork_sandwich/sensor_collection'
+  require 'pulledpork_sandwich/sensor'
+  require 'pulledpork_sandwich/sandwich_conf'
+  require 'pulledpork_sandwich/sandwich_wrapper'
 
 end
 
