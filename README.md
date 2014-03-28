@@ -2,7 +2,8 @@
 
 Smash, and layer up that pulledpork config to support multiple sensors.
 
-![About](http://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Germantown_Commissary%2C_BBQ_Pork_Sandwich.jpg/320px-Germantown_Commissary%2C_BBQ_Pork_Sandwich.jpg)
+![About](http://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Germantown_Commissary%2C_BBQ_Pork_Sandwich.jpg/320px-Germantown_Commissary%2C_BBQ_Pork_Sandwich.jpg) [1]
+
 
 ## PREREQUISTES
 
@@ -32,3 +33,5 @@ $> pulledpork_sandwich .rb--nopush
 Copyright 2014 Scott MacGregor 
 
 See LICENSE File : GNU GPLv2
+
+[1] `CCSA - http://commons.wikimedia.org/wiki/File:Germantown_Commissary,_BBQ_Pork_Sandwich.jpg`
