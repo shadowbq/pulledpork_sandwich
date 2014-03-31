@@ -19,6 +19,6 @@ if RUBY_VERSION >= '1.9.2'
   Pulledpork_Sandwich::CLI.invoke
 
 else
-  puts 'RuboCop supports only Ruby 1.9.2+'
+  puts 'pulledpork_sandwich supports only Ruby 1.9.2+'
   exit(-1)
 end

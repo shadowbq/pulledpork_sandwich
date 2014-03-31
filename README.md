@@ -24,6 +24,22 @@ $> bundle install
 ## RUNTIME
 
 ```shell
+$ ./bin/pulledpork_sandwich --help
+Usage: pulledpork_sandwich [OPTIONS] 
+
+Alt Modes::
+    -s, --scaffold=                  scaffold a configuration for a sensor named xxx
+Options::
+    -n, --nopush                     Do not push / scp configurations
+    -c, --config=                    location of sandwich.conf file
+                                       Default: /opt/pulledpork_sandwich/etc/sandwich.conf
+    -v, --verbose                    Run verbosely
+    -h, --help                       Display this screen
+```
+
+Adding A New Sensor.
+
+```shell
 $> pulledpork_sandwich.rb --scaffold=Sample
 $> pulledpork_sandwich .rb--nopush
 ```
