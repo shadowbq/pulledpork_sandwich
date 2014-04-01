@@ -63,29 +63,34 @@ module Pulledpork_Sandwich
         exit
       end
       
-      unless options[:scaffold].nil? 
-        # Read config for sensorname, if not fail and tell user to write config entry.
-        begin
-          SandwichConf.instance.new(config_file)
-          raise EmptySandwichConfig unless SandwichConf.instance.config['SENSORS'][options[:scaffold]].exists?
-        rescue EmptySandwichConfig
-          puts "[Config Error] Missing SENSORS entry for #{options[:scaffold]} in #{config_file}."
-          exit 1
-        end
-        # Proceed to scaffold sensor
-        scaffold(options[:scaffold])
-        exit 0
-      end  
-      
-      if options[:scaffold].nil? 
-        SandwichConf.instance.new(config_file)
-        @collection = SensorCollection.new
-        @collection = @collection.build(SandwichConf.instance.config['SENSORS']) 
+      begin 
+        raise ErrorSandwichConfig, "no such file: #{options[:sandwich_conf]}" unless (File.file?(options[:sandwich_conf]) and File.exists?(options[:sandwich_conf]))
 
-        @collection.each do  |sensor| 
-          pulledpork(sensor)
+        unless options[:scaffold].nil? 
+          # Read config for sensorname, if not fail and tell user to write config entry.
+
+          @config = SandwichConf.new(options[:sandwich_conf])
+          raise ErrorSandwichConfig, "no such sensor entry in #{options[:sandwich_conf]}" unless @config.config['SENSORS'][options[:scaffold]].exists?        
+          # Proceed to scaffold sensor
+          scaffold(options[:scaffold])
+          exit 0
+        end  
+        
+        if options[:scaffold].nil? 
+          @config = SandwichConf.new(options[:sandwich_conf])
+          @collection = SensorCollection.new
+          @collection = @collection.build(@config.config['SENSORS'], @config.config['Config']['openvpn_log']) 
+
+          @collection.each do  |sensor| 
+            pulledpork(sensor)
+          end
         end
-      end
+      
+      rescue ErrorSandwichConfig => e
+          puts "[Config Error] #{e.message}"
+          puts "Please refer to documentation on: www.github.com/shadowbq/pulledpork_sandwich"
+          exit 1
+      end  
 
     end # def
 
