@@ -68,9 +68,9 @@ module Pulledpork_Sandwich
 
         unless options[:scaffold].nil? 
           # Read config for sensorname, if not fail and tell user to write config entry.
-
+          puts "Scaffolding: #{options[:scaffold]}"
           @config = SandwichConf.new(options[:sandwich_conf])
-          raise ErrorSandwichConfig, "no such sensor entry in #{options[:sandwich_conf]}" unless @config.config['SENSORS'][options[:scaffold]].exists?        
+          raise ErrorSandwichConfig, "no such sensor entry '#{options[:scaffold]}' in #{options[:sandwich_conf]}" if @config.config['SENSORS'][options[:scaffold]].nil?        
           # Proceed to scaffold sensor
           scaffold(options[:scaffold])
           exit 0
