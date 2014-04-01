@@ -8,8 +8,8 @@ module Pulledpork_Sandwich
 	    @config = YAML.load_file(config_file)
 
 	    raise ErrorSandwichConfig, "Empty configuration file: #{config_file}" unless @config
-
-	    raise ErrorSandwichConfig, "Missing section SENSORS: #{config_file}" unless @config['SENSORS'].nil?
+	    raise ErrorSandwichConfig, "Missing section SENSORS: #{config_file}" unless @config.keys.include?('SENSORS')
+	    raise ErrorSandwichConfig, "No hosts entries in SENSORS: #{config_file}" if @config['SENSORS'].nil?
 
 	    @config['SENSORS'].each_key do |host|
 	      @config['SENSORS'][host]['notes'] ||= ""
