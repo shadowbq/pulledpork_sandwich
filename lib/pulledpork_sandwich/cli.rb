@@ -66,15 +66,7 @@ module Pulledpork_Sandwich
       begin 
         raise ErrorSandwichConfig, "no such file: #{options[:sandwich_conf]}" unless (File.file?(options[:sandwich_conf]) and File.exists?(options[:sandwich_conf]))
 
-        unless options[:scaffold].nil? 
-          # Read config for sensorname, if not fail and tell user to write config entry.
-          puts "Scaffolding: #{options[:scaffold]}"
-          @config = SandwichConf.new(options[:sandwich_conf])
-          raise ErrorSandwichConfig, "no such sensor entry '#{options[:scaffold]}' in #{options[:sandwich_conf]}" if @config.config['SENSORS'][options[:scaffold]].nil?        
-          # Proceed to scaffold sensor
-          scaffold(options[:scaffold])
-          exit 0
-        end  
+ 
         
         if options[:scaffold].nil? 
           @config = SandwichConf.new(options[:sandwich_conf])
@@ -84,7 +76,15 @@ module Pulledpork_Sandwich
           @collection.each do  |sensor| 
             pulledpork(sensor)
           end
-        end
+        else
+          # Read config for sensorname, if not fail and tell user to write config entry.
+          puts "Scaffolding: #{options[:scaffold]}"
+          @config = SandwichConf.new(options[:sandwich_conf])
+          raise ErrorSandwichConfig, "no such sensor entry '#{options[:scaffold]}' in #{options[:sandwich_conf]}" if @config.config['SENSORS'][options[:scaffold]].nil?        
+          # Proceed to scaffold sensor
+          scaffold(options[:scaffold])
+          exit 0
+        end 
       
       rescue ErrorSandwichConfig => e
           puts "[Config Error] #{e.message}"
@@ -131,16 +131,23 @@ module Pulledpork_Sandwich
 
     #Make all the skelton directory for the sensor
     def scaffold(sensor)
+      
+      #Possible NO-OP
+      
+      unless (File.file?("#{BASEDIR}/etc/global.disablesid.conf") and File.exists?("#{BASEDIR}/etc/global.disablesid.conf"))
+        puts "Scaffolding: Global configurations"
+        FileUtils.cp_r(Dir.glob("#{BASEDIR}/defaults/global.*.conf"), "#{BASEDIR}/etc/") 
+      end  
       FileUtils.mkdir_p("#{BASEDIR}/logs")
       FileUtils.mkdir_p("#{BASEDIR}/tmp")
       FileUtils.mkdir_p("#{BASEDIR}/archive")
       FileUtils.mkdir_p("#{BASEDIR}/etc/sensors")
-      FileUtils.cp_r(Dir.glob("#{BASEDIR}/defaults/global.*.conf"), "#{BASEDIR}/etc/sensors/#{sensor}") unless File.directory?("#{BASEDIR}/etc/")
-      
-      FileUtils.mkdir_p("#{BASEDIR}/export/sensors/#{options[:scaffold]}")
-      FileUtils.cp_r("#{BASEDIR}/defaults/sensors/Sample/", "#{BASEDIR}/etc/sensors/#{options[:scaffold]}")
-      FileUtils.mkdir_p("#{BASEDIR}/export/sensors/#{options[:scaffold]}/so_rules/")
-      FileUtils.touch("#{BASEDIR}/export/sensors/#{options[:scaffold]}/so_rules.rules")
+
+      puts "Scaffolding: #{sensor}"
+      FileUtils.mkdir_p("#{BASEDIR}/export/sensors/#{sensor}")
+      FileUtils.cp_r("#{BASEDIR}/defaults/sensors/Sample/", "#{BASEDIR}/etc/sensors/#{sensor}")
+      FileUtils.mkdir_p("#{BASEDIR}/export/sensors/#{sensor}/so_rules/")
+      FileUtils.touch("#{BASEDIR}/export/sensors/#{sensor}/so_rules.rules")
     end
 
   end
