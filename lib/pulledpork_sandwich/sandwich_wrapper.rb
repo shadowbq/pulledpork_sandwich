@@ -2,17 +2,18 @@ module Pulledpork_Sandwich
   
   class SandwichWrapper
 
-    def initialize( sensor="example-snort" )
+    def initialize(sensor)
       @sensor = sensor
     end
 
     def combine_modifiers
       modifiers = ['localrules','enablesid','dropsid', 'disablesid', 'modifysid','threshold']
+
       global_modifier_filelist = Hash[modifiers.collect {|modifier| [modifier, "#{BASEDIR}/etc/global.#{modifier}.conf"] }]  
-      modifier_filelist = Hash[modifiers.collect {|modifier| [modifier, "#{BASEDIR}/etc/sensors/#{sensor.name}/#{modifier}.conf"] }]
+      modifier_filelist = Hash[modifiers.collect {|modifier| [modifier, "#{BASEDIR}/etc/sensors/#{@sensor}/#{modifier}.conf"] }]
       
       global_modifier_filelist.zip(modifier_filelist) do |globalmod,sensormod|
-        File.open("#{BASEDIR}/etc/sensors/#{sensor.name}/combined.#{globalmod[0]}.conf",'w') do |output_file|
+        File.open("#{BASEDIR}/etc/sensors/#{@sensor}/combined.#{globalmod[0]}.conf",'w') do |output_file|
           output_file.puts File.readlines(globalmod[1]) 
           output_file.puts File.readlines(sensormod[1])   
         end
@@ -60,8 +61,8 @@ module Pulledpork_Sandwich
     end
 
     def package
-      tgz = Zlib::GzipWriter.new(File.open("#{BASEDIR}/tmp/#{@name}_sig_package.tgz", 'wb'))
-      @filelist = Dir["#{BASEDIR}/etc/sensors/#{@name}/export/*.rules", "#{BASEDIR}/etc/sensors/#{@name}/export/*.map"] 
+      tgz = Zlib::GzipWriter.new(File.open("#{BASEDIR}/tmp/#{@sensor}_sig_package.tgz", 'wb'))
+      @filelist = Dir["#{BASEDIR}/etc/sensors/#{@sensor}/export/*.rules", "#{BASEDIR}/etc/sensors/#{@sensor}/export/*.map"] 
       Minitar.pack(@filelist, tgz) 
     end
 

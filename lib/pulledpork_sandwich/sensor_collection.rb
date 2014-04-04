@@ -2,7 +2,7 @@ module Pulledpork_Sandwich
 
   class SensorCollection < Array
 
-    def build( data, openvpn_log )
+    def build( data, openvpn_log = nil )
       self + data.collect { |sensor| 
         @sensor = Sensor.new
         @sensor.name = sensor[0]

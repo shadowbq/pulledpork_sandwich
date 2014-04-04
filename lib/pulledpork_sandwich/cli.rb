@@ -12,12 +12,13 @@ module Pulledpork_Sandwich
     
     def initialize
       
+      @verbose = false
       options = {}
       
       options[:scaffold] = nil
       options[:nopush] = false
       options[:sandwich_conf] = "#{BASEDIR}/etc/sandwich.conf"
-      options[:verbose] = false # Fix Sandwich Conf loading order.. 
+      options[:verbose] = @verbose # Fix Sandwich Conf loading order.. 
       
       opt_parser = OptionParser.new do |opt|
         opt.banner = "Usage: pulledpork_sandwich [OPTIONS] "
@@ -62,16 +63,22 @@ module Pulledpork_Sandwich
         puts opt_parser
         exit
       end
-      
+
+      @verbose = options[:verbose]
+
       begin 
         raise ErrorSandwichConfig, "no such file: #{options[:sandwich_conf]}" unless (File.file?(options[:sandwich_conf]) and File.exists?(options[:sandwich_conf]))
 
- 
-        
         if options[:scaffold].nil? 
           @config = SandwichConf.new(options[:sandwich_conf])
+          depcheck
           @collection = SensorCollection.new
-          @collection = @collection.build(@config.config['SENSORS'], @config.config['Config']['openvpn_log']) 
+          
+          if @config.config['CONFIG']['openvpn_log']
+            @collection = @collection.build(@config.config['SENSORS'], @config.config['CONFIG']['openvpn_log']) 
+          else
+            @collection = @collection.build(@config.config['SENSORS']) 
+          end
 
           @collection.each do  |sensor| 
             pulledpork(sensor)
@@ -90,39 +97,61 @@ module Pulledpork_Sandwich
           puts "[Config Error] #{e.message}"
           puts "Please refer to documentation on: www.github.com/shadowbq/pulledpork_sandwich"
           exit 1
+      rescue ShellExecutionError => e
+          puts "[Dependency Error] #{e.message}"
+          puts "Please refer to documentation on: www.github.com/shadowbq/pulledpork_sandwich"
+          exit 1    
       end  
 
     end # def
 
     private
 
-    def pulledpork(sensor)
-      print "Sensor - #{sensor.name} :" if verbose 
+    def verbose(msg)
+      print msg if @verbose 
+    end
 
+    def depcheck
+      raise ShellExecutionError, "no such file: pulledpork.pl" unless which ('pulledpork.pl')
+    end
+
+    def which(cmd)
+      exts = ENV['PATHEXT'] ? ENV['PATHEXT'].split(';') : ['']
+      ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
+        exts.each { |ext|
+          exe = File.join(path, "#{cmd}#{ext}")
+          return exe if File.executable? exe
+        }
+      end
+      return nil
+    end
+
+    def pulledpork(sensor)
+      verbose "Sensor - #{sensor.name} :"
       #check for scaffold of sensor.
       # Read config for sensorname, if not fail and tell user to write config entry.
 
       pork = SandwichWrapper.new(sensor.name)
 
       #Merge Global Policy with Sensor Policy
-      print "m" if verbose 
+      verbose "m"
       pork.combine_modifiers
-      print "." if verbose 
+      verbose "."  
       
       #Dynamic Create PulledPork Config to file
-      print "p"
+      verbose "p"  
       pork.create_config
-      print "." if verbose 
+      verbose "."  
 
       #Run Pulled Pork for each Sensor
-      print "r" if verbose 
+      verbose "r"  
       pork.trigger
-      print "." if verbose 
+      verbose "."  
 
       #TAR.GZ results 
-      print "z" if verbose 
+      verbose "z"  
       pork.package
-      puts "." if verbose
+      verbose "." 
 
       #SCP to corresponding sensor
       #puts "SCPing to #{sensor.hostname} - #{sensor.openvpn}"
@@ -135,7 +164,7 @@ module Pulledpork_Sandwich
       #Possible NO-OP
       
       unless (File.file?("#{BASEDIR}/etc/global.disablesid.conf") and File.exists?("#{BASEDIR}/etc/global.disablesid.conf"))
-        puts "Scaffolding: Global configurations"
+        verbose "Scaffolding: Global configurations \n"
         FileUtils.cp_r(Dir.glob("#{BASEDIR}/defaults/global.*.conf"), "#{BASEDIR}/etc/") 
       end  
       FileUtils.mkdir_p("#{BASEDIR}/logs")
@@ -143,7 +172,7 @@ module Pulledpork_Sandwich
       FileUtils.mkdir_p("#{BASEDIR}/archive")
       FileUtils.mkdir_p("#{BASEDIR}/etc/sensors")
 
-      puts "Scaffolding: #{sensor}"
+      verbose "Scaffolding: #{sensor} \n"
       FileUtils.mkdir_p("#{BASEDIR}/export/sensors/#{sensor}")
       FileUtils.cp_r("#{BASEDIR}/defaults/sensors/Sample/", "#{BASEDIR}/etc/sensors/#{sensor}")
       FileUtils.mkdir_p("#{BASEDIR}/export/sensors/#{sensor}/so_rules/")
