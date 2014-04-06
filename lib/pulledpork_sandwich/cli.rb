@@ -81,7 +81,7 @@ module Pulledpork_Sandwich
           end
 
           @collection.each do  |sensor| 
-            pulledpork(sensor)
+            pulledpork(sensor, @config.config['CONFIG']['oinkcode'])
           end
         else
           # Read config for sensorname, if not fail and tell user to write config entry.
@@ -126,12 +126,12 @@ module Pulledpork_Sandwich
       return nil
     end
 
-    def pulledpork(sensor)
+    def pulledpork(sensor, oinkcode)
       verbose "Sensor - #{sensor.name} :"
       #check for scaffold of sensor.
       # Read config for sensorname, if not fail and tell user to write config entry.
 
-      pork = SandwichWrapper.new(sensor.name)
+      pork = SandwichWrapper.new(sensor.name, oinkcode)
 
       #Merge Global Policy with Sensor Policy
       verbose "m"

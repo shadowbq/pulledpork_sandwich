@@ -2,8 +2,9 @@ module Pulledpork_Sandwich
   
   class SandwichWrapper
 
-    def initialize(sensor)
+    def initialize(sensor, oinkcode)
       @sensor = sensor
+      @oinkcode = oinkcode
     end
 
     def combine_modifiers
@@ -25,10 +26,14 @@ module Pulledpork_Sandwich
       configfile.puts "#Stat"
       configfile.puts "distro=FreeBSD-8.1"
       configfile.puts "snort_version=2.9.2.3"
-      configfile.puts "version=0.6.0"
+      configfile.puts "version=0.7.0"
       configfile.puts "ignore=deleted.rules,experimental.rules"
       configfile.puts ""
-      configfile.puts "rule_url=https://www.snort.org/reg-rules/|snortrules-snapshot.tar.gz|23e665c6efc7e4a67601e9c0d11a39207daf16ac"
+      configfile.puts "rule_url=https://www.snort.org/reg-rules/|snortrules-snapshot.tar.gz|#{@oinkcode}"
+      configfile.puts "rule_url=https://www.snort.org/reg-rules/|opensource.gz|#{@oinkcode}"      
+      configfile.puts "rule_url=https://s3.amazonaws.com/snort-org/www/rules/community/|community-rules.tar.gz|Community"
+      configfile.puts "rule_url=http://labs.snort.org/feeds/ip-filter.blf|IPBLACKLIST|open"
+
       configfile.puts "temp_path=/tmp"
       configfile.puts ""
       configfile.puts "#Imports"
@@ -45,9 +50,15 @@ module Pulledpork_Sandwich
       configfile.puts "#Exports"
       configfile.puts "rule_path=#{BASEDIR}/export/sensors/#{@sensor}/snort.rule"
       configfile.puts "sid_msg=#{BASEDIR}/export/sensors/#{@sensor}/sid-msg.map"
-      configfile.puts "sostub_path=#{BASEDIR}/export/sensors/#{@sensor}/so_rules.rules"
       configfile.puts "sorule_path=#{BASEDIR}/export/sensors/#{@sensor}/so_rules/"
       configfile.puts "sid_changelog=#{BASEDIR}/log/#{@sensor}_sid_changes.log"
+      configfile.puts ""
+      configfile.puts "#ClearText"
+      configfile.puts "black_list=#{BASEDIR}/etc/default.blacklist"
+      configfile.puts "#Path to output IPRVersion.dat"
+      configfile.puts "IPRVersion=#{BASEDIR}/export/sensors/#{@sensor}/iplists"
+      configfile.puts "# Short circuit call to control bin"
+      configfile.puts "snort_control=true"
       configfile.puts ""
       configfile.puts "#Backups (Copy the export to backups dir)"
       configfile.puts "backup=#{BASEDIR}/export/sensors/#{@sensor}/"

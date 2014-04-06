@@ -3,6 +3,7 @@
 *.lock
 .bundle
 .config
+defaults/pulledpork*
 coverage
 InstalledFiles
 lib/bundler/man
