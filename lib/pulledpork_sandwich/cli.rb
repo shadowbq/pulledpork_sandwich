@@ -94,11 +94,15 @@ module Pulledpork_Sandwich
         end 
       
       rescue ErrorSandwichConfig => e
-          puts "[Config Error] #{e.message}"
+          puts "\n[Config Error] #{e.message}"
           puts "Please refer to documentation on: www.github.com/shadowbq/pulledpork_sandwich"
           exit 1
       rescue ShellExecutionError => e
-          puts "[Dependency Error] #{e.message}"
+          if /Error 403/ =~ e.message
+            puts "\n[Dependency Error] Authentication Issue raised. Check Oinkcodes."
+          else
+            puts "\n[Dependency Error] #{e.message}"
+          end
           puts "Please refer to documentation on: www.github.com/shadowbq/pulledpork_sandwich"
           exit 1    
       end  
@@ -156,6 +160,8 @@ module Pulledpork_Sandwich
       #SCP to corresponding sensor
       #puts "SCPing to #{sensor.hostname} - #{sensor.openvpn}"
       #Net::SCP.upload!("remote.host.com", "username", "/local/path", "/remote/path", :ssh => { :password => "password" })
+
+      verbose "done\n"
     end
 
     #Make all the skelton directory for the sensor

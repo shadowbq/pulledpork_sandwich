@@ -28,6 +28,7 @@ module Pulledpork_Sandwich
       configfile.puts "snort_version=2.9.2.3"
       configfile.puts "version=0.7.0"
       configfile.puts "ignore=deleted.rules,experimental.rules"
+      configfile.puts "sid_msg_version=1"
       configfile.puts ""
       configfile.puts "rule_url=https://www.snort.org/reg-rules/|snortrules-snapshot.tar.gz|#{@oinkcode}"
       configfile.puts "rule_url=https://www.snort.org/reg-rules/|opensource.gz|#{@oinkcode}"      
