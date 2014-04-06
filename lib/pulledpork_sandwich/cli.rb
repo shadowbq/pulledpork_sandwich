@@ -173,7 +173,7 @@ module Pulledpork_Sandwich
         verbose "Scaffolding: Global configurations \n"
         FileUtils.cp_r(Dir.glob("#{BASEDIR}/defaults/global.*.conf"), "#{BASEDIR}/etc/") 
       end  
-      FileUtils.mkdir_p("#{BASEDIR}/logs")
+      FileUtils.mkdir_p("#{BASEDIR}/log")
       FileUtils.mkdir_p("#{BASEDIR}/tmp")
       FileUtils.mkdir_p("#{BASEDIR}/archive")
       FileUtils.mkdir_p("#{BASEDIR}/etc/sensors")
@@ -181,8 +181,9 @@ module Pulledpork_Sandwich
       verbose "Scaffolding: #{sensor} \n"
       FileUtils.mkdir_p("#{BASEDIR}/export/sensors/#{sensor}")
       FileUtils.cp_r("#{BASEDIR}/defaults/sensors/Sample/", "#{BASEDIR}/etc/sensors/#{sensor}")
-      FileUtils.mkdir_p("#{BASEDIR}/export/sensors/#{sensor}/so_rules/")
-      FileUtils.touch("#{BASEDIR}/export/sensors/#{sensor}/so_rules.rules")
+      #FileUtils.mkdir_p("#{BASEDIR}/export/sensors/#{sensor}/so_rules/")
+      #FileUtils.touch("#{BASEDIR}/export/sensors/#{sensor}/so_rules.rules")
+      FileUtils.touch("#{BASEDIR}/log/#{sensor}_sid_changes.log")
     end
 
   end

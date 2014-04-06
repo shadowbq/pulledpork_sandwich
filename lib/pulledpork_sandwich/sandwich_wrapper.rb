@@ -35,7 +35,7 @@ module Pulledpork_Sandwich
       configfile.puts "rule_url=https://s3.amazonaws.com/snort-org/www/rules/community/|community-rules.tar.gz|Community"
       configfile.puts "rule_url=http://labs.snort.org/feeds/ip-filter.blf|IPBLACKLIST|open"
 
-      configfile.puts "temp_path=/tmp"
+      configfile.puts "temp_path=#{BASEDIR}/tmp"
       configfile.puts ""
       configfile.puts "#Imports"
       configfile.puts "snort_path=/usr/local/bin/snort"
@@ -51,7 +51,7 @@ module Pulledpork_Sandwich
       configfile.puts "#Exports"
       configfile.puts "rule_path=#{BASEDIR}/export/sensors/#{@sensor}/snort.rule"
       configfile.puts "sid_msg=#{BASEDIR}/export/sensors/#{@sensor}/sid-msg.map"
-      configfile.puts "sorule_path=#{BASEDIR}/export/sensors/#{@sensor}/so_rules/"
+      configfile.puts "#sorule_path=#{BASEDIR}/export/sensors/#{@sensor}/so_rules/"
       configfile.puts "sid_changelog=#{BASEDIR}/log/#{@sensor}_sid_changes.log"
       configfile.puts ""
       configfile.puts "#ClearText"
@@ -69,7 +69,7 @@ module Pulledpork_Sandwich
     end
 
     def trigger
-      stdout, stderr = shellex("pulledpork.pl -c #{BASEDIR}/etc/sensors/#{@sensor}/pulledpork.dyn.conf")
+      stdout, stderr = shellex("pulledpork.pl -T -c #{BASEDIR}/etc/sensors/#{@sensor}/pulledpork.dyn.conf")
     end
 
     def package
