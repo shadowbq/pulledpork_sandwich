@@ -69,7 +69,14 @@ module Pulledpork_Sandwich
     end
 
     def trigger
-      stdout, stderr = shellex("pulledpork.pl -T -c #{BASEDIR}/etc/sensors/#{@sensor}/pulledpork.dyn.conf")
+      stdout, stderr = shellex("pulledpork.pl -v -T -c #{BASEDIR}/etc/sensors/#{@sensor}/pulledpork.dyn.conf")
+      File.open("#{BASEDIR}/log/#{@sensor}_pulledpork.#{Time.now.to_i}.log", 'w') do |exelog|
+        exelog.puts stdout
+      end
+      File.open("#{BASEDIR}/log/#{@sensor}_pulledpork.#{Time.now.to_i}.err", 'w') do |exelog|
+        exelog.puts stderr
+      end
+     
     end
 
     def package
