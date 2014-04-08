@@ -75,13 +75,13 @@ module Pulledpork_Sandwich
           @collection = SensorCollection.new
           
           if @config.config['CONFIG']['openvpn_log']
-            @collection = @collection.build(@config.config['SENSORS'], @config.config['CONFIG']['openvpn_log']) 
+            @collection = @collection.build(@config.config['CONFIG'],@config.config['SENSORS'], @config.config['CONFIG']['openvpn_log']) 
           else
-            @collection = @collection.build(@config.config['SENSORS']) 
+            @collection = @collection.build(@config.config['CONFIG'],@config.config['SENSORS']) 
           end
 
           @collection.each do  |sensor| 
-            pulledpork(sensor, @config.config['CONFIG']['oinkcode'])
+            pulledpork(sensor, @config.config['CONFIG']['oinkcode'], @config['CONFIG']['pulledpork'])
           end
         else
           # Read config for sensorname, if not fail and tell user to write config entry.
@@ -130,12 +130,12 @@ module Pulledpork_Sandwich
       return nil
     end
 
-    def pulledpork(sensor, oinkcode)
+    def pulledpork(sensor, oinkcode, pulledporkconf)
       verbose "Sensor - #{sensor.name} :"
       #check for scaffold of sensor.
       # Read config for sensorname, if not fail and tell user to write config entry.
 
-      pork = SandwichWrapper.new(sensor.name, oinkcode)
+      pork = SandwichWrapper.new(sensor, oinkcode, pulledporkconf)
 
       #Merge Global Policy with Sensor Policy
       verbose "m"

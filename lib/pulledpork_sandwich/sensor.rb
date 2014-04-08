@@ -1,7 +1,7 @@
 module Pulledpork_Sandwich
 
   class Sensor
-    attr_accessor :name, :ipaddress, :notes, :hostname, :openvpn_log
+    attr_accessor :name, :ipaddress, :notes, :hostname, :ips_policy, :openvpn_log
     
     def openvpn
       raise ErrorSandwichConfig "Invalid openvpn log" unless (File.file?(openvpn_log) and File.exists?(openvpn_log))
