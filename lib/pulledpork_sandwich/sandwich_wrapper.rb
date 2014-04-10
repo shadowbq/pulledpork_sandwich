@@ -25,9 +25,6 @@ module Pulledpork_Sandwich
         end
       end
 
-      #Export threshold.conf as it is not processed by pulledpork
-      FileUtils.cp("#{BASEDIR}/etc/sensors/#{@sensor.name}/combined.threshold.conf", "#{BASEDIR}/export/sensors/#{@sensor.name}/threshold.conf")
-
     end  
 
     def create_config
@@ -90,7 +87,10 @@ module Pulledpork_Sandwich
 
     def trigger(skipdownload='')
       FileUtils.mkdir_p("#{BASEDIR}/export/sensors/#{@sensor.name}")
-
+      
+      #Export threshold.conf as it is not processed by pulledpork
+      FileUtils.cp("#{BASEDIR}/etc/sensors/#{@sensor.name}/combined.threshold.conf", "#{BASEDIR}/export/sensors/#{@sensor.name}/threshold.conf")
+      
       # Pulled pork Exection notes: 
       # -v Verbose output 
       # -P Process even if no new downloads
@@ -104,6 +104,7 @@ module Pulledpork_Sandwich
       File.open("#{BASEDIR}/log/#{@sensor.name}_pulledpork.#{@time_at}.err", 'w') do |exelog|
         exelog.puts stderr
       end
+
      
     end
 
