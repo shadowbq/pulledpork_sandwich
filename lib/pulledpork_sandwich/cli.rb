@@ -73,8 +73,6 @@ module Pulledpork_Sandwich
         opt_parser.parse!
         exclusive_options = [:scaffold, :purge, :clobber]
 
-        Bundler.require(:development)
-        binding.pry
         if (exclusive_options.collect { |item| item if options.include? item }.compact).length > 1
           puts "Error: Mutually Exclusive options were selected"
           puts optparse

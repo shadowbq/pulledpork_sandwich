@@ -144,16 +144,32 @@ module Pulledpork_Sandwich
     end
 
     def purge
-      FileUtils.remove_entry_secure("#{BASEDIR}/log")
-      FileUtils.remove_entry_secure("#{BASEDIR}/tmp")
+      begin
+        FileUtils.remove_entry_secure("#{BASEDIR}/log")
+      rescue Errno::ENOENT
+      end
+      
+      begin
+        FileUtils.remove_entry_secure("#{BASEDIR}/tmp")
+      rescue Errno::ENOENT
+      end
+
       FileUtils.mkdir_p("#{BASEDIR}/log")
       FileUtils.mkdir_p("#{BASEDIR}/tmp")
     end
 
     def clobber
       purge
-      FileUtils.remove_entry_secure("#{BASEDIR}/archive")
-      FileUtils.remove_entry_secure("#{BASEDIR}/export/sensors")
+      begin
+        FileUtils.remove_entry_secure("#{BASEDIR}/archive")
+      rescue Errno::ENOENT
+      end
+
+      begin
+        FileUtils.remove_entry_secure("#{BASEDIR}/export/sensors")
+      rescue Errno::ENOENT
+      end  
+      
       FileUtils.mkdir_p("#{BASEDIR}/archive")
       FileUtils.mkdir_p("#{BASEDIR}/export/sensors")
     end
