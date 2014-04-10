@@ -4,12 +4,27 @@ module Pulledpork_Sandwich
   class Sandwich
 
     def initialize (options)
+
       @verbose = options[:verbose]
 
       begin 
         raise ErrorSandwichConfig, "no such file: #{options[:sandwich_conf]}" unless (File.file?(options[:sandwich_conf]) and File.exists?(options[:sandwich_conf]))
 
-        if options[:scaffold].nil? 
+        if options[:scaffold]
+          # Read config for sensorname, if not fail and tell user to write config entry.
+          puts "Scaffolding: #{options[:scaffold]}"
+          @config = SandwichConf.new(options[:sandwich_conf])
+          raise ErrorSandwichConfig, "no such sensor entry '#{options[:scaffold]}' in #{options[:sandwich_conf]}" if @config.config['SENSORS'][options[:scaffold]].nil?        
+          # Proceed to scaffold sensor
+          scaffold(options[:scaffold])
+          exit 0
+        elsif options[:purge]
+          purge
+          exit 0
+        elsif options[:clobber]
+          clobber
+          exit 0
+        else
           @config = SandwichConf.new(options[:sandwich_conf])
           depcheck
           @collection = SensorCollection.new
@@ -23,14 +38,6 @@ module Pulledpork_Sandwich
           @collection.each do |sensor| 
             pulledpork(sensor, @config.config['CONFIG']['oinkcode'], @config.config['CONFIG']['pulledpork'], options[:skipdownload])
           end
-        else
-          # Read config for sensorname, if not fail and tell user to write config entry.
-          puts "Scaffolding: #{options[:scaffold]}"
-          @config = SandwichConf.new(options[:sandwich_conf])
-          raise ErrorSandwichConfig, "no such sensor entry '#{options[:scaffold]}' in #{options[:sandwich_conf]}" if @config.config['SENSORS'][options[:scaffold]].nil?        
-          # Proceed to scaffold sensor
-          scaffold(options[:scaffold])
-          exit 0
         end 
       
       rescue ErrorSandwichConfig => e
@@ -51,6 +58,7 @@ module Pulledpork_Sandwich
 
     private
 
+    ## Helpers
     def verbose(msg)
       print msg if @verbose 
     end
@@ -70,6 +78,8 @@ module Pulledpork_Sandwich
       return nil
     end
 
+    
+    ## Sensor loop
     def pulledpork(sensor, oinkcode, pulledporkconf, skipdownload)
       verbose "Sensor - #{sensor.name} :"
       #check for scaffold of sensor.
@@ -111,23 +121,41 @@ module Pulledpork_Sandwich
     #Make all the skelton directory for the sensor
     def scaffold(sensor)
       
-      #Possible NO-OP
-      
-      unless (File.file?("#{BASEDIR}/etc/global.disablesid.conf") and File.exists?("#{BASEDIR}/etc/global.disablesid.conf"))
-        verbose "Scaffolding: Global configurations \n"
-        FileUtils.cp_r(Dir.glob("#{BASEDIR}/defaults/global.*.conf"), "#{BASEDIR}/etc/") 
-      end  
+      verbose "Scaffolding: Checking Application Directory Structure \n"
       FileUtils.mkdir_p("#{BASEDIR}/log")
       FileUtils.mkdir_p("#{BASEDIR}/tmp")
       FileUtils.mkdir_p("#{BASEDIR}/archive")
       FileUtils.mkdir_p("#{BASEDIR}/etc/sensors")
+      
+      #Possible NO-OP      
+      unless (File.file?("#{BASEDIR}/etc/global.disablesid.conf") and File.exists?("#{BASEDIR}/etc/global.disablesid.conf"))
+        verbose "Scaffolding: Creating Global Configurations \n"
+        FileUtils.cp_r(Dir.glob("#{BASEDIR}/defaults/global.*.conf"), "#{BASEDIR}/etc/") 
+      end  
 
-      verbose "Scaffolding: #{sensor} \n"
+      unless (File.file?("#{BASEDIR}/etc/sensors/#{sensor}/disablesid.conf") and File.exists?("#{BASEDIR}/etc/sensors/#{sensor}/disablesid.conf"))
+        verbose "Scaffolding: Creating #{sensor} Sensor Configurations \n"
+        FileUtils.cp_r("#{BASEDIR}/defaults/sensors/Sample/", "#{BASEDIR}/etc/sensors/#{sensor}")
+      end  
       FileUtils.mkdir_p("#{BASEDIR}/export/sensors/#{sensor}")
-      FileUtils.cp_r("#{BASEDIR}/defaults/sensors/Sample/", "#{BASEDIR}/etc/sensors/#{sensor}")
       #FileUtils.mkdir_p("#{BASEDIR}/export/sensors/#{sensor}/so_rules/")
       #FileUtils.touch("#{BASEDIR}/export/sensors/#{sensor}/so_rules.rules")
-      FileUtils.touch("#{BASEDIR}/log/#{sensor}_sid_changes.log")
+      #FileUtils.touch("#{BASEDIR}/log/#{sensor}_sid_changes.log")
+    end
+
+    def purge
+      FileUtils.remove_entry_secure("#{BASEDIR}/log")
+      FileUtils.remove_entry_secure("#{BASEDIR}/tmp")
+      FileUtils.mkdir_p("#{BASEDIR}/log")
+      FileUtils.mkdir_p("#{BASEDIR}/tmp")
+    end
+
+    def clobber
+      purge
+      FileUtils.remove_entry_secure("#{BASEDIR}/archive")
+      FileUtils.remove_entry_secure("#{BASEDIR}/export/sensors")
+      FileUtils.mkdir_p("#{BASEDIR}/archive")
+      FileUtils.mkdir_p("#{BASEDIR}/export/sensors")
     end
 
   end

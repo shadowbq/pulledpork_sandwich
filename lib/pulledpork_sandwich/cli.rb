@@ -14,7 +14,6 @@ module Pulledpork_Sandwich
       
       options = {}
       
-      options[:scaffold] = nil
       options[:skipdownload] = false
       options[:nopush] = false
       options[:sandwich_conf] = "#{BASEDIR}/etc/sandwich.conf"
@@ -24,23 +23,21 @@ module Pulledpork_Sandwich
         opt.banner = "Usage: pulledpork_sandwich [OPTIONS] "
         opt.separator ""
 
-        opt.separator "Alt Modes::"
+       
+        opt.separator "Deployment Modes::"
         
-        opt.on("-s","--scaffold=","scaffold a configuration for a sensor named xxx") do |value|
-          options[:scaffold] = value
-        end
-        
-        opt.separator "Options::"
-        
-        opt.on("-k", "--keep", "Do not download new rules from rules sources","  Default: #{options[:skipdownload]}") do 
-          options[:skipdownload] = true
-        end
-
-        opt.on("-n", "--nopush", "Do not push / scp configurations") do 
+        opt.on("-n", "--nopush", "Do not push via scp the new packages","  Default: #{options[:nopush]}") do 
           options[:nopush] = false
         end
         
-        opt.on("-c","--config=","location of sandwich.conf file","  Default: #{options[:sandwich_conf]}") do |value|
+        opt.separator ""
+        opt.separator "Options::"
+        
+        opt.on("-k", "--keep", "Keep existing rules, aka do not download new rules from rules sources","  Default: #{options[:skipdownload]}") do 
+          options[:skipdownload] = true
+        end
+      
+        opt.on("-c","--config=","Location of sandwich.conf file","  Default: #{options[:sandwich_conf]}") do |value|
           options[:sandwich_conf] = value
         end
 
@@ -52,6 +49,21 @@ module Pulledpork_Sandwich
           puts opt_parser
           exit 0
         end
+
+        opt.separator ""
+        opt.separator "Alt Modes::"
+        
+        opt.on("-s","--scaffold=","scaffold a configuration for a sensor named xxx") do |value|
+          options[:scaffold] = value
+        end
+
+        opt.on("--purge","Deletes log, tmp") do
+          options[:purge] = true
+        end
+
+        opt.on("--clobber","Deletes log, tmp, archive, and export") do 
+          options[:clobber] = true
+        end
         
       end
 
@@ -59,6 +71,15 @@ module Pulledpork_Sandwich
       begin
         raise unless ARGV.size > 0
         opt_parser.parse!
+        exclusive_options = [:scaffold, :purge, :clobber]
+
+        Bundler.require(:development)
+        binding.pry
+        if (exclusive_options.collect { |item| item if options.include? item }.compact).length > 1
+          puts "Error: Mutually Exclusive options were selected"
+          puts optparse
+          exit
+        end
       #If options fail display help
       #rescue Exception => e  
       #  puts e.message  
@@ -72,5 +93,5 @@ module Pulledpork_Sandwich
     end
 
   end
-  
+
 end

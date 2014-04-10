@@ -13,13 +13,10 @@ require 'singleton'
 require 'json'
 require 'yaml'
 
-require 'pry'
-
 require 'net/scp'
 
 $:.unshift(File.dirname(__FILE__))
 
-#require 'pry' if debug
 include Archive::Tar
 
 

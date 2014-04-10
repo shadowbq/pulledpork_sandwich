@@ -89,6 +89,8 @@ module Pulledpork_Sandwich
     end
 
     def trigger(skipdownload='')
+      FileUtils.mkdir_p("#{BASEDIR}/export/sensors/#{@sensor.name}")
+
       # Pulled pork Exection notes: 
       # -v Verbose output 
       # -P Process even if no new downloads
