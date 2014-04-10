@@ -1,11 +1,15 @@
 module Pulledpork_Sandwich
   
+  # This class wraps the execution of pulledpork.pl per sensor,
+  # the creation of each of the pulledpork.conf files, and
+  # the packaging of the results into a tar-gz ball.
   class SandwichWrapper
 
     def initialize(sensor, oinkcode, pulledpork)
       @sensor = sensor
       @oinkcode = oinkcode
       @pulledpork = pulledpork
+      @time_at = Time.now.to_i
     end
 
     def combine_modifiers
@@ -20,6 +24,10 @@ module Pulledpork_Sandwich
           output_file.puts File.readlines(sensormod[1])   
         end
       end
+
+      #Export threshold.conf as it is not processed by pulledpork
+      FileUtils.cp("#{BASEDIR}/etc/sensors/#{@sensor.name}/combined.threshold.conf", "#{BASEDIR}/export/sensors/#{@sensor.name}/threshold.conf")
+
     end  
 
     def create_config
@@ -35,7 +43,7 @@ module Pulledpork_Sandwich
         if v['oinkcode'] 
           configfile.puts "rule_url=#{v['url']}|#{@oinkcode}"
         else
-          configfile.puts "rule_url=#{v['url']}"
+          configfile.puts "rule_url=#{v['url']}|blank"
         end  
       end
       configfile.puts "rule_url=http://labs.snort.org/feeds/ip-filter.blf|IPBLACKLIST|open"
@@ -53,10 +61,10 @@ module Pulledpork_Sandwich
       configfile.puts "modifysid=#{BASEDIR}/etc/sensors/#{@sensor.name}/combined.modifysid.conf"
       configfile.puts ""
       configfile.puts "# Exports"
-      configfile.puts "rule_path=#{BASEDIR}/export/sensors/#{@sensor.name}/snort.rule"
+      configfile.puts "rule_path=#{BASEDIR}/export/sensors/#{@sensor.name}/snort.rules"
       configfile.puts "sid_msg=#{BASEDIR}/export/sensors/#{@sensor.name}/sid-msg.map"
-      configfile.puts "#sorule_path=#{BASEDIR}/export/sensors/#{@sensor.name}/so_rules/"
-      configfile.puts "sid_changelog=#{BASEDIR}/log/#{@sensor.name}_sid_changes.log"
+      configfile.puts "# sorule_path=#{BASEDIR}/export/sensors/#{@sensor.name}/so_rules/"
+      configfile.puts "sid_changelog=#{BASEDIR}/log/#{@sensor.name}_sid_changes.#{@time_at}.log"
       configfile.puts ""
       configfile.puts "# ClearText"
       configfile.puts "black_list=#{BASEDIR}/etc/default.blacklist"
@@ -71,7 +79,7 @@ module Pulledpork_Sandwich
       configfile.puts "backup=#{BASEDIR}/export/sensors/#{@sensor.name}/"
       configfile.puts "backup_file=#{BASEDIR}/archive/#{@sensor.name}_backup"
       configfile.puts ""
-      if sensor.ips_policy 
+      if @sensor.ips_policy 
         configfile.puts "# RuleSet (security, balanced, connectivity)"
         configfile.puts "ips_policy=#{@sensor.policy}"
         configfile.puts ""
@@ -80,25 +88,26 @@ module Pulledpork_Sandwich
 
     end
 
-    def trigger
-      # Verbose output 
-      # Process even if no new downloads
-      # Process text based rules files only, i.e. DO NOT process so_rules
-      # use explicit config file
-      stdout, stderr = shellex("pulledpork.pl -v -P -T -c #{BASEDIR}/etc/sensors/#{@sensor.name}/pulledpork.dyn.conf")
-      File.open("#{BASEDIR}/log/#{@sensor.name}_pulledpork.#{Time.now.to_i}.log", 'w') do |exelog|
+    def trigger(skipdownload='')
+      # Pulled pork Exection notes: 
+      # -v Verbose output 
+      # -P Process even if no new downloads
+      # -T Process text based rules files only, i.e. DO NOT process so_rules
+      # -c use explicit config file
+      stdout, stderr = shellex("pulledpork.pl -v -P -T -c #{BASEDIR}/etc/sensors/#{@sensor.name}/pulledpork.dyn.conf #{skipdownload}")
+
+      File.open("#{BASEDIR}/log/#{@sensor.name}_pulledpork.#{@time_at}.log", 'w') do |exelog|
         exelog.puts stdout
       end
-      File.open("#{BASEDIR}/log/#{@sensor.name}_pulledpork.#{Time.now.to_i}.err", 'w') do |exelog|
+      File.open("#{BASEDIR}/log/#{@sensor.name}_pulledpork.#{@time_at}.err", 'w') do |exelog|
         exelog.puts stderr
       end
      
     end
 
     def package
-      tgz = Zlib::GzipWriter.new(File.open("#{BASEDIR}/tmp/#{@sensor.name}_sig_package.tgz", 'wb'))
-      @filelist = Dir["#{BASEDIR}/etc/sensors/#{@sensor.name}/export/*.rules", "#{BASEDIR}/etc/sensors/#{@sensor.name}/export/*.map"] 
-      Minitar.pack(@filelist, tgz) 
+      tgz = Zlib::GzipWriter.new(File.open("#{BASEDIR}/export/sensors/#{@sensor.name}_package.#{@time_at}.tgz", 'wb'))
+      Minitar.pack(Dir["#{BASEDIR}/export/sensors/#{@sensor.name}/*"], tgz) 
     end
 
   end

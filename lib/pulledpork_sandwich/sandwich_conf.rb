@@ -1,5 +1,6 @@
 module Pulledpork_Sandwich
 
+	# Provides a yaml configuration and validation for pulledpork_sandwich.
 	class SandwichConf
 
 	  attr_reader :config

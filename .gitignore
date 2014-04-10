@@ -3,6 +3,8 @@
 *.lock
 .bundle
 .config
+.tag*
+TODO
 defaults/pulledpork*
 coverage
 InstalledFiles

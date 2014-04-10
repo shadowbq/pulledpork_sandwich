@@ -13,6 +13,8 @@ require 'singleton'
 require 'json'
 require 'yaml'
 
+require 'pry'
+
 require 'net/scp'
 
 $:.unshift(File.dirname(__FILE__))
@@ -30,6 +32,7 @@ module Pulledpork_Sandwich
   require 'pulledpork_sandwich/sensor'
   require 'pulledpork_sandwich/sandwich_conf'
   require 'pulledpork_sandwich/sandwich_wrapper'
+  require 'pulledpork_sandwich/sandwich'
 
 end
 
