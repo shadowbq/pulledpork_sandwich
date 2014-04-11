@@ -43,7 +43,9 @@ module Pulledpork_Sandwich
           configfile.puts "rule_url=#{v['url']}|blank"
         end  
       end
-      configfile.puts "rule_url=http://labs.snort.org/feeds/ip-filter.blf|IPBLACKLIST|open"
+      @pulledpork['ip-blacklists'].each do |url|
+        configfile.puts "rule_url=#{url}|IPBLACKLIST|open"
+      end
       configfile.puts "temp_path=#{BASEDIR}/tmp"
       configfile.puts ""
       configfile.puts "# Imports"
@@ -63,11 +65,11 @@ module Pulledpork_Sandwich
       configfile.puts "# sorule_path=#{BASEDIR}/export/sensors/#{@sensor.name}/so_rules/"
       configfile.puts "sid_changelog=#{BASEDIR}/log/#{@sensor.name}_sid_changes.#{@time_at}.log"
       configfile.puts ""
-      configfile.puts "# ClearText"
-      configfile.puts "black_list=#{BASEDIR}/etc/default.blacklist"
+      configfile.puts "# ClearText Combined IP Blacklist"
+      configfile.puts "black_list=#{BASEDIR}/export/sensors/#{@sensor.name}/combined.blacklist"
       configfile.puts ""
       configfile.puts "# Path to output IPRVersion.dat"
-      configfile.puts "IPRVersion=#{BASEDIR}/export/sensors/#{@sensor.name}/iplists"
+      configfile.puts "IPRVersion=#{BASEDIR}/export/sensors/#{@sensor.name}/combined."
       configfile.puts ""
       configfile.puts "# Short circuit call to control bin"
       configfile.puts "snort_control=true"

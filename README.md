@@ -47,8 +47,10 @@ CONFIG:
         oinkcode: true
       community:
         url: https://s3.amazonaws.com/snort-org/www/rules/community/|community-rules.tar.gz
-    ipblacklists:
+    ip-blacklists:
       - http://labs.snort.org/feeds/ip-filter.blf
+      - http://malc0de.com/bl/IP_Blacklist.txt
+      - http://www.malwaredomainlist.com/hostslist/ip.txt
     # Note that setting this value will disable all non-label rulesets (ET, etc)  
     # ruleset: security
 SENSORS:
@@ -119,6 +121,42 @@ Examples:
 * [Disable SID](https://pulledpork.googlecode.com/svn/trunk/etc/disablesid.conf)
 * [Modify SID](https://pulledpork.googlecode.com/svn/trunk/etc/modifysid.conf)
 
+### Generally GEN1 Accepted SID Ranges
+SourceFire / Snort.org: 
+
+* If the number is less than 1000000, it is a SourceFire rule 
+* 1-3464 Old Snort GPL sigs (moved to the 2100000 sid range ) 
+
+Local Rules:
+
+* 1000000-1999999 Reserved for Local Use -- Put your custom rules in this range to avoid conflicts
+
+Emergin Threats:
+
+* 2000000-2099999 Emerging Threats Open Rulesets
+* 2100000-2103999 Forked ET Versions of the Original Snort GPL Signatures Originally sids 3464 and prior, forked to be maintained
+
+Converted to Suricata:
+
+* 2200000-2200999 Suricata Decoder Events
+* 2210000-2210999 Suricata Stream Events
+* 2220000-2299999 Suricata Reserved
+* 2800000-2809999 Emerging Threats Pro Full Coverage Ruleset -- ETProRules
+
+Dynamicly Updated Rules:
+
+* 2400000-2400999 SpamHaus DROP List — Updated Daily -- SpamHausDROPList
+* 2402000-2402299 Dshield Top Attackers Rules — Updated Daily -- DshieldTopAttackers
+* 2403300-2403499 CIArmy.com Top Attackers Rules — Updated Daily - See http://www.ciarmy.com#list -- CiArmy?
+* 2404000-2404299 Shadowserver.org Bot C&C List — Updated Daily -- BotCC
+* 2405000-2405999 Shadowserver.org Bot C&C List Grouped by Port — Updated Daily -- BotCC
+* 2406000-2406999 Russian Business Network Known Nets --- OBSOLETED -- RussianBusinessNetwork
+* 2408000-2408499 Russian Business Network Known Malvertisers --- OBSOLETED -- RussianBusinessNetwork
+* 2520000-2521999 Tor Exit Nodes List Updated Daily -- TorRules
+* 2522000-2525999 Tor Relay Nodes List (NOT Exit nodes) Updated Daily -- TorRules
+
+[Generally Accepted SID Ranges](http://doc.emergingthreats.net/bin/view/Main/SidAllocation)
+
 ### Order of Operations
 
 Please note that pulledpork runs rule modification **(enable, drop, disable, modify)** in that order by default..
@@ -135,6 +173,23 @@ Filter Type | Description
 Rate Filters |  You can use rate filters to change a rule action when the number or rate of events indicates a possible attack.
 Event Filters | You can use event filters to reduce the number of logged events for noisy rules. This can be tuned to significantly reduce false alarms.
 Event Suppression | You can completely suppress the logging of uninteresting events.
+
+## IP Blacklists
+
+```yaml
+CONFIG:
+    ip-blacklists:
+      - http://labs.snort.org/feeds/ip-filter.blf
+      - http://malc0de.com/bl/IP_Blacklist.txt
+      - http://www.malwaredomainlist.com/hostslist/ip.txt
+```
+
+As defined above, you can add as many IP Blacklists in you want. 
+
+The output will be saved into each sensor's export and package tarball as the `combined.blacklist` file. 
+
+The `combined.IPRVersion.dat` is also included which is a modified MD5 Hash of the href
+
 
 ## LOGS
 
