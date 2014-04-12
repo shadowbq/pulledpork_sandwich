@@ -19,10 +19,15 @@ module Pulledpork_Sandwich
       modifier_filelist = Hash[modifiers.collect {|modifier| [modifier, "#{BASEDIR}/etc/sensors/#{@sensor.name}/#{modifier}.conf"] }]
       
       global_modifier_filelist.zip(modifier_filelist) do |globalmod,sensormod|
-        File.open("#{BASEDIR}/etc/sensors/#{@sensor.name}/combined.#{globalmod[0]}.conf",'w') do |output_file|
+        File.open("#{BASEDIR}/tmp/#{@sensor.name}.combined.#{globalmod[0]}.conf",'w') do |output_file|
           output_file.puts File.readlines(globalmod[1]) 
           output_file.puts File.readlines(sensormod[1])   
         end
+
+        File.open("#{BASEDIR}/export/sensors/#{@sensor.name}/combined.#{globalmod[0]}.conf", "w") do |output_file| 
+           output_file.puts File.readlines("#{BASEDIR}/tmp/#{@sensor.name}.combined.#{globalmod[0]}.conf").uniq.sort
+        end
+
       end
 
     end  
@@ -74,10 +79,6 @@ module Pulledpork_Sandwich
       configfile.puts "# Short circuit call to control bin"
       configfile.puts "snort_control=true"
       configfile.puts ""
-      configfile.puts "# Backups (Copy the export to backups dir)"
-      configfile.puts "backup=#{BASEDIR}/export/sensors/#{@sensor.name}/"
-      configfile.puts "backup_file=#{BASEDIR}/archive/#{@sensor.name}_backup"
-      configfile.puts ""
       if @sensor.ips_policy 
         configfile.puts "# RuleSet (security, balanced, connectivity)"
         configfile.puts "ips_policy=#{@sensor.policy}"
@@ -107,12 +108,15 @@ module Pulledpork_Sandwich
         exelog.puts stderr
       end
 
-     
     end
 
+    # Dont rely on backup / backup_file from pulledpork to build tarball.
     def package
+      cleanup = Dir["#{BASEDIR}/export/sensors/#{@sensor.name}_package.*.tgz"]
       tgz = Zlib::GzipWriter.new(File.open("#{BASEDIR}/export/sensors/#{@sensor.name}_package.#{@time_at}.tgz", 'wb'))
       Minitar.pack(Dir["#{BASEDIR}/export/sensors/#{@sensor.name}/*"], tgz) 
+      FileUtils.cp("#{BASEDIR}/export/sensors/#{@sensor.name}_package.#{@time_at}.tgz", "#{BASEDIR}/archive/.")
+      cleanup.each { |file| FileUtils.rm(file) }
     end
 
   end
