@@ -18,25 +18,16 @@ module Pulledpork_Sandwich
       global_modifier_filelist = Hash[modifiers.collect {|modifier| [modifier, "#{BASEDIR}/etc/global.#{modifier}.conf"] }]  
       sensor_modifier_filelist = Hash[modifiers.collect {|modifier| [modifier, "#{BASEDIR}/etc/sensors/#{@sensor.name}/#{modifier}.conf"] }]
       
-      global_modifier_filelist.zip(sensor_modifier_filelist) do |globalmod,sensormod|
-        tmpfile = "#{BASEDIR}/tmp/#{@sensor.name}.combined.#{globalmod[0]}.conf"
-
-        File.open(tmpfile,'w') do |output_file|
-          output_file.puts File.readlines(globalmod[1]) 
-          output_file.puts File.readlines(sensormod[1])   
+      global_modifier_filelist.zip(sensor_modifier_filelist) do |globalmod,sensormod|      
+        tmpfile = Tempfile.new('config.', "#{BASEDIR}/tmp")
+        begin
+          configuration = (File.readlines(globalmod[1]) + File.readlines(sensormod[1])).uniq.sort.delete_if {|line| line =~ /^#.*/}
+          tmpfile.write configuration
+        ensure
+           tmpfile.close
+           FileUtils.cp(tmpfile.path, "#{BASEDIR}/etc/sensors/#{@sensor.name}/combined.#{globalmod[0]}.conf")
+           tmpfile.unlink   # deletes the temp file
         end
-
-        File.open("#{BASEDIR}/etc/sensors/#{@sensor.name}/combined.#{globalmod[0]}.conf", "w") do |output_file| 
-           output_file.puts File.readlines(tmpfile).uniq.sort
-        end
-
-        File.open("#{BASEDIR}/etc/sensors/#{@sensor.name}/combined.#{globalmod[0]}.2.conf", "w") do |output_file| 
-           output_file.puts File.readlines("#{BASEDIR}/etc/sensors/#{@sensor.name}/combined.#{globalmod[0]}.conf").delete_if {|line| line =~ /^#.*/}
-        end
-        
-
-        FileUtils.rm(tmpfile)
-
       end
 
     end  

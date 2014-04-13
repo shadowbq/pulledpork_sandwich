@@ -9,6 +9,7 @@ require 'shellex'
 require 'zlib'
 require 'archive/tar/minitar'
 require 'singleton'
+require 'tempfile'
 
 require 'json'
 require 'yaml'
