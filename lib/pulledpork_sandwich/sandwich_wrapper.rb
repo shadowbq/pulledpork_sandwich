@@ -22,7 +22,7 @@ module Pulledpork_Sandwich
         tmpfile = Tempfile.new('config.', "#{BASEDIR}/tmp")
         begin
           configuration = (File.readlines(globalmod[1]) + File.readlines(sensormod[1])).uniq.sort.delete_if {|line| line =~ /^#.*/}
-          tmpfile.write configuration
+          tmpfile.puts configuration
         ensure
            tmpfile.close
            FileUtils.cp(tmpfile.path, "#{BASEDIR}/etc/sensors/#{@sensor.name}/combined.#{globalmod[0]}.conf")
