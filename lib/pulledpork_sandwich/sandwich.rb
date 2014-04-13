@@ -125,7 +125,7 @@ module Pulledpork_Sandwich
       FileUtils.mkdir_p("#{BASEDIR}/log")
       FileUtils.mkdir_p("#{BASEDIR}/tmp")
       FileUtils.mkdir_p("#{BASEDIR}/archive")
-      FileUtils.mkdir_p("#{BASEDIR}/etc/sensors")
+      FileUtils.mkdir_p("#{BASEDIR}/etc/sensors/combined")
       
       #Possible NO-OP      
       unless (File.file?("#{BASEDIR}/etc/global.disablesid.conf") and File.exists?("#{BASEDIR}/etc/global.disablesid.conf"))

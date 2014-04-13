@@ -25,7 +25,7 @@ module Pulledpork_Sandwich
           tmpfile.puts configuration
         ensure
            tmpfile.close
-           FileUtils.cp(tmpfile.path, "#{BASEDIR}/etc/sensors/#{@sensor.name}/combined.#{globalmod[0]}.conf")
+           FileUtils.cp(tmpfile.path, "#{BASEDIR}/etc/sensors/#{@sensor.name}/combined/#{globalmod[0]}.conf")
            tmpfile.unlink   # deletes the temp file
         end
       end
@@ -58,11 +58,11 @@ module Pulledpork_Sandwich
       configfile.puts "config_path=#{BASEDIR}/etc/snort.conf"
       configfile.puts ""
       configfile.puts "# Modifiers"
-      configfile.puts "local_rules=#{BASEDIR}/etc/sensors/#{@sensor.name}/combined.localrules.conf"
-      configfile.puts "enablesid=#{BASEDIR}/etc/sensors/#{@sensor.name}/combined.enablesid.conf"
-      configfile.puts "dropsid=#{BASEDIR}/etc/sensors/#{@sensor.name}/combined.dropsid.conf"
-      configfile.puts "disablesid=#{BASEDIR}/etc/sensors/#{@sensor.name}/combined.disablesid.conf"
-      configfile.puts "modifysid=#{BASEDIR}/etc/sensors/#{@sensor.name}/combined.modifysid.conf"
+      configfile.puts "local_rules=#{BASEDIR}/etc/sensors/#{@sensor.name}/combined/localrules.conf"
+      configfile.puts "enablesid=#{BASEDIR}/etc/sensors/#{@sensor.name}/combined/enablesid.conf"
+      configfile.puts "dropsid=#{BASEDIR}/etc/sensors/#{@sensor.name}/combined/dropsid.conf"
+      configfile.puts "disablesid=#{BASEDIR}/etc/sensors/#{@sensor.name}/combined/disablesid.conf"
+      configfile.puts "modifysid=#{BASEDIR}/etc/sensors/#{@sensor.name}/combined/modifysid.conf"
       configfile.puts ""
       configfile.puts "# Exports"
       configfile.puts "rule_path=#{BASEDIR}/export/sensors/#{@sensor.name}/snort.rules"
@@ -92,7 +92,7 @@ module Pulledpork_Sandwich
       FileUtils.mkdir_p("#{BASEDIR}/export/sensors/#{@sensor.name}")
       
       #Export threshold.conf as it is not processed by pulledpork
-      FileUtils.cp("#{BASEDIR}/etc/sensors/#{@sensor.name}/combined.threshold.conf", "#{BASEDIR}/export/sensors/#{@sensor.name}/threshold.conf")
+      FileUtils.cp("#{BASEDIR}/etc/sensors/#{@sensor.name}/combined/threshold.conf", "#{BASEDIR}/export/sensors/#{@sensor.name}/threshold.conf")
       
       # Pulled pork Exection notes: 
       # -v Verbose output 
