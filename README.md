@@ -200,6 +200,96 @@ Logfiles are very useful. Not so much when they fill my STDOUT screen.
 * All logs have an epoch UTC timestamp attached prior to its extension.
 * Pulledpork runs in verbose and the STDOUT & STDERR are stored. 
 
+
+## DIRECTORY TREE
+
+Example of the directory tree after successfully scaffolding the Sample sensor
+and then running `pulledpork_sandwich` on a copied default `sandwich.conf`. 
+
+```Shell
+.
+├── archive
+│   └── Sample_package.1397421075.tgz
+├── bin
+│   └── pulledpork_sandwich
+├── defaults
+│   ├── global.disablesid.conf
+│   ├── global.dropsid.conf
+│   ├── global.enablesid.conf
+│   ├── global.localrules.conf
+│   ├── global.modifysid.conf
+│   ├── global.threshold.conf
+│   ├── sandwich.conf
+│   ├── sandwich.conf.example
+│   ├── sensors
+│   │   └── Sample
+│   │       ├── disablesid.conf
+│   │       ├── dropsid.conf
+│   │       ├── enablesid.conf
+│   │       ├── localrules.conf
+│   │       ├── modifysid.conf
+│   │       └── threshold.conf
+│   └── snort.conf.example
+├── etc
+│   ├── global.disablesid.conf
+│   ├── global.dropsid.conf
+│   ├── global.enablesid.conf
+│   ├── global.localrules.conf
+│   ├── global.modifysid.conf
+│   ├── global.threshold.conf
+│   ├── sandwich.conf
+│   ├── sensors
+│   │   └── Sample
+│   │       ├── combined
+│   │       │   ├── disablesid.conf
+│   │       │   ├── dropsid.conf
+│   │       │   ├── enablesid.conf
+│   │       │   ├── localrules.conf
+│   │       │   ├── modifysid.conf
+│   │       │   └── threshold.conf
+│   │       ├── disablesid.conf
+│   │       ├── dropsid.conf
+│   │       ├── enablesid.conf
+│   │       ├── localrules.conf
+│   │       ├── modifysid.conf
+│   │       ├── pulledpork.dyn.conf
+│   │       └── threshold.conf
+│   └── snort.conf
+├── export
+│   └── sensors
+│       ├── Sample
+│       │   ├── sid-msg.map
+│       │   ├── snort.rules
+│       │   └── threshold.conf
+│       └── SAMPLE_package.1397421075.tgz
+├── Gemfile
+├── Gemfile.lock
+├── lib
+│   ├── pulledpork_sandwich
+│   │   ├── cli.rb
+│   │   ├── sandwich_conf.rb
+│   │   ├── sandwich.rb
+│   │   ├── sandwich_wrapper.rb
+│   │   ├── sensor_collection.rb
+│   │   └── sensor.rb
+│   └── pulledpork_sandwich.rb
+├── LICENSE
+├── log
+│   ├── Sample_pulledpork.1397421075.err
+│   ├── Sample_pulledpork.1397421075.log
+│   └── Sample_sid_changes.1397421075.log
+├── README.md
+├── tmp
+│   ├── community-rules.tar.gz
+│   ├── community-rules.tar.gz.md5
+│   ├── opensource.gz
+│   ├── opensource.gz.md5
+│   ├── snortrules-snapshot-2923.tar.gz
+│   └── snortrules-snapshot-2923.tar.gz.md5
+
+```
+
+
 ## LICENSE
 
 Copyright 2014 - Scott MacGregor 
