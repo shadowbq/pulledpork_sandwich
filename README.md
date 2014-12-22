@@ -10,7 +10,9 @@ Smash, and layer up that pulledpork config to support multiple sensors.
 * POSIX OS
 * git
 * Ruby ~> 1.9, 2.X with bundler gem
-* Perl
+* Perl 
+ * cpan install  LWP::UserAgent
+ * cpan install Crypt::SSLeay
 * Pulledpork.pl from googlecode (-> v0.7.0) (https://code.google.com/p/pulledpork)   (https://pulledpork.googlecode.com/svn-history/r268/trunk/pulledpork.pl)
 * Valid Oinkmaster code
 
