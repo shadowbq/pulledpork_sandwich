@@ -60,10 +60,15 @@ SENSORS:
     ipaddress: 10.0.0.2
     notes: "xxxxxxxx"
     hostname: sample.corp.com
+    distro: FreeBSD-8.1
+    snort_version: 2.9.5.6
   DMZ:
     ipaddress: 10.0.0.3
     notes: "DMZ Sensor"
     hostname: dmz.corp.com
+    distro: FreeBSD-8.1
+    snort_version: 2.9.7.0
+
 ``` 
  
 ### Note: you must have a valid oinkcode from snort.org.
