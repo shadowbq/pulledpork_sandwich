@@ -25,6 +25,7 @@ module Pulledpork_Sandwich
           tmpfile.puts configuration
         ensure
            tmpfile.close
+           FileUtils.mkdir_p("#{BASEDIR}/etc/sensors/#{@sensor.name}/combined/")
            FileUtils.cp(tmpfile.path, "#{BASEDIR}/etc/sensors/#{@sensor.name}/combined/#{globalmod[0]}.conf")
            tmpfile.unlink   # deletes the temp file
         end
