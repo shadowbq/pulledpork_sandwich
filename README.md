@@ -19,7 +19,7 @@ Smash, and layer up that pulledpork config to support multiple sensors.
 ```shell
 $> git clone https://github.com/shadowbq/pulledpork_sandwich.git /opt/pulledpork_sandwich
 $> cd /opt/pulledpork_sandwich
-$> sudo ln -s /opt/pulledpork_sandwich/bin/pulledpork /usr/bin/pulledpork_sandwich
+$> sudo ln -s /opt/pulledpork_sandwich/bin/pulledpork_sandwich /usr/bin/pulledpork_sandwich
 $> bundle install
 ```
 
