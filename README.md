@@ -11,7 +11,7 @@ Smash, and layer up that pulledpork config to support multiple sensors.
 * git
 * Ruby ~> 1.9, 2.X with bundler gem
 * Perl
-* Pulledpork.pl from googlecode (~> 0.7.x) (https://code.google.com/p/pulledpork)
+* Pulledpork.pl from googlecode (-> v0.7.0) (https://code.google.com/p/pulledpork)   (https://pulledpork.googlecode.com/svn-history/r268/trunk/pulledpork.pl)
 * Valid Oinkmaster code
 
 ## INSTALL
