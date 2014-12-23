@@ -36,8 +36,8 @@ module Pulledpork_Sandwich
     def create_config
       configfile = File.open("#{BASEDIR}/etc/sensors/#{@sensor.name}/pulledpork.dyn.conf", 'w')
       configfile.puts "#Stat"
-      configfile.puts "distro=FreeBSD-8.1"
-      configfile.puts "snort_version=2.9.2.3"
+      configfile.puts "distro=#{@sensor.distro}"
+      configfile.puts "snort_version=#{@sensor.snort_version}"
       configfile.puts "version=0.7.0"
       configfile.puts "ignore=deleted.rules,experimental.rules"
       configfile.puts "sid_msg_version=1"
