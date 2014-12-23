@@ -113,6 +113,12 @@ $> pulledpork_sandwich --nopush -v -k
 Sensor - Sample :m.p.r.z.done
 ```
 
+Skipping SSL Hostname Validation (pulledpork.pl ENV)
+
+```shell
+$> PERL_LWP_SSL_VERIFY_HOSTNAME=0 ./bin/pulledpork_sandwich -n -v
+```
+
 ## TUNE
 
 Edit the `etc\global.*.conf` files if you want to affect all the sensors.
