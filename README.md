@@ -128,6 +128,15 @@ Skipping SSL Hostname Validation (pulledpork.pl ENV)
 $> PERL_LWP_SSL_VERIFY_HOSTNAME=0 ./bin/pulledpork_sandwich -n -v
 ```
 
+## SNORT.ORG (TALOS) EOL
+
+It's important to understand the EOL policy of the Cisco TALOS group, and what signatures they support. 
+
+https://snort.org/eol
+
+Ensure your version of snort listed in `sandwich.conf` is under support. 
+
+``` snort_version: 2.9.7.0 ```
 
 ## TUNE
 
