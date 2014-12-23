@@ -119,7 +119,7 @@ Having problems with your path? Run from `/opt/pulledpork_sandwich`
 
 ```shell
 $> cd /opt/pulledpork_sandwich/
-$> $ ./bin/pulledpork_sandwich --options --more-option-examples
+$> ./bin/pulledpork_sandwich --options --more-option-examples
 ```
 
 Skipping SSL Hostname Validation (pulledpork.pl ENV)
@@ -127,9 +127,6 @@ Skipping SSL Hostname Validation (pulledpork.pl ENV)
 ```shell
 $> PERL_LWP_SSL_VERIFY_HOSTNAME=0 ./bin/pulledpork_sandwich -n -v
 ```
-
-
-
 
 
 ## TUNE
