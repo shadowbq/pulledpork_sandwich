@@ -135,7 +135,7 @@ module Pulledpork_Sandwich
 
       unless (File.file?("#{BASEDIR}/etc/sensors/#{sensor}/disablesid.conf") and File.exists?("#{BASEDIR}/etc/sensors/#{sensor}/disablesid.conf"))
         verbose "Scaffolding: Creating #{sensor} Sensor Configurations \n"
-        FileUtils.cp_r("#{BASEDIR}/defaults/sensors/Sample/", "#{BASEDIR}/etc/sensors/#{sensor}")
+        FileUtils.cp_r("#{BASEDIR}/defaults/sensors/Sample/.", "#{BASEDIR}/etc/sensors/#{sensor}")
       end  
       FileUtils.mkdir_p("#{BASEDIR}/export/sensors/#{sensor}")
       #FileUtils.mkdir_p("#{BASEDIR}/export/sensors/#{sensor}/so_rules/")
