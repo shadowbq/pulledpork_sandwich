@@ -14,7 +14,7 @@ module Pulledpork_Sandwich
     end
 
     def combine_modifiers
-      modifiers = ['localrules','enablesid','dropsid', 'disablesid', 'modifysid','threshold']
+      modifiers = ['localrules','enablesid','dropsid', 'disablesid', 'modifysid','threshold', 'whitelist']
 
       global_modifier_filelist = Hash[modifiers.collect {|modifier| [modifier, "#{BASEDIR}/etc/global.#{modifier}.conf"] }]  
       sensor_modifier_filelist = Hash[modifiers.collect {|modifier| [modifier, "#{BASEDIR}/etc/sensors/#{@sensor.name}/#{modifier}.conf"] }]
@@ -94,8 +94,10 @@ module Pulledpork_Sandwich
     def trigger(skipdownload='')
       FileUtils.mkdir_p("#{BASEDIR}/export/sensors/#{@sensor.name}")
       
-      #Export threshold.conf as it is not processed by pulledpork
-      FileUtils.cp("#{BASEDIR}/etc/sensors/#{@sensor.name}/combined/threshold.conf", "#{BASEDIR}/export/sensors/#{@sensor.name}/threshold.conf")
+      #Export files not processed by pulledpork
+      ['threshold','whitelist'].each do |passthrough|
+        FileUtils.cp("#{BASEDIR}/etc/sensors/#{@sensor.name}/combined/#{passthrough}.conf", "#{BASEDIR}/export/sensors/#{@sensor.name}/#{passthrough}.conf")
+      end 
       
       # Pulled pork Exection notes: 
       # -v Verbose output 
