@@ -11,7 +11,6 @@ module Pulledpork_Sandwich
       @pulledpork = pulledpork
       @pulledpork_path = pulledpork_path
       @time_at = Time.now.to_i
-      @pulledpork_version = '0.7.0'
     end
 
     def combine_modifiers
@@ -41,7 +40,7 @@ module Pulledpork_Sandwich
       configfile.puts "#Stat"
       configfile.puts "distro=#{@sensor.distro}"
       configfile.puts "snort_version=#{@sensor.snort_version}"
-      configfile.puts "version=#{@pulledpork_version}"
+      configfile.puts "version=#{@pulledpork['version']}"
       configfile.puts "ignore=deleted.rules,experimental.rules"
       configfile.puts "sid_msg_version=1"
       configfile.puts ""

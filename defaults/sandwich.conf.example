@@ -17,6 +17,7 @@ CONFIG:
       - http://malc0de.com/bl/IP_Blacklist.txt
       - http://www.malwaredomainlist.com/hostslist/ip.txt
     path: /opt/bin/pulledpork.pl
+    version: 0.7.1
     # Note that setting this value will disable all non-label rulesets (ET, etc)  
     # ruleset: security
 SENSORS:
@@ -25,12 +26,12 @@ SENSORS:
     notes: "xxxxxxxx"
     hostname: sample.corp.com
     distro: FreeBSD-8.1                                                                                                                                                                                                                
-    snort_version: 2.9.2.3
+    snort_version: 2.9.7.6
 
   DMZ:
     ipaddress: 10.0.0.3
     notes: "DMZ Sensor"
     hostname: dmz.corp.com
     distro: FreeBSD-8.1                                                                                                                                                                                                                
-    snort_version: 2.9.2.3
+    snort_version: 2.9.7.6
 

@@ -26,6 +26,7 @@ module Pulledpork_Sandwich
 	    @config['CONFIG']['verbose'] ||= false
 	    @config['CONFIG']['openvpnlog'] ||= false
 	    @config['CONFIG']['pulledpork']['path'] ||= 'pulledpork.pl'
+	    @config['CONFIG']['pulledpork']['version'] ||= '0.7.0'
 
 	    @config
 	  end

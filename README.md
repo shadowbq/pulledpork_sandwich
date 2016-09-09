@@ -11,9 +11,11 @@ Smash, and layer up that pulledpork config to support multiple sensors.
 * git
 * Ruby ~> 1.9, 2.X with bundler gem
 * Perl 
- * cpan install  LWP::UserAgent
+ * cpan install LWP::UserAgent
  * cpan install Crypt::SSLeay
-* Pulledpork.pl from googlecode (-> v0.7.0) (https://code.google.com/p/pulledpork)   (https://pulledpork.googlecode.com/svn-history/r268/trunk/pulledpork.pl)
+* Pulledpork.pl 
+  * shirkdog/pulledpork github (-> v0.7.1 +) 
+  * Old from googlecode (-> v0.7.0) (https://code.google.com/p/pulledpork)   (https://pulledpork.googlecode.com/svn-history/r268/trunk/pulledpork.pl)
 * Valid Oinkmaster code
 
 ## INSTALL
@@ -54,6 +56,7 @@ CONFIG:
       - http://malc0de.com/bl/IP_Blacklist.txt
       - http://www.malwaredomainlist.com/hostslist/ip.txt
     path: /opt/bin/pulledpork.pl
+    version: 0.7.1
     # Note that setting this value will disable all non-label rulesets (ET, etc)  
     # ruleset: security
 SENSORS:
@@ -62,13 +65,13 @@ SENSORS:
     notes: "xxxxxxxx"
     hostname: sample.corp.com
     distro: FreeBSD-8.1
-    snort_version: 2.9.5.6
+    snort_version: 2.9.7.6
   DMZ:
     ipaddress: 10.0.0.3
     notes: "DMZ Sensor"
     hostname: dmz.corp.com
     distro: FreeBSD-8.1
-    snort_version: 2.9.7.0
+    snort_version: 2.9.7.6
 
 ``` 
  
