@@ -53,7 +53,7 @@ CONFIG:
         oinkcode: true
       community:
         url: https://snort.org/downloads/community/|community-rules.tar.gz|Community
-        eplicit: true
+        explicit: true
     ip-blacklists:
       - http://talosintel.com/feeds/ip-filter.blf
     path: /opt/bin/pulledpork.pl
