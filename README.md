@@ -50,7 +50,8 @@ CONFIG:
         url: https://www.snort.org/reg-rules/|snortrules-snapshot.tar.gz
         oinkcode: true
       community:
-        url: https://snort.org/downloads/community/|community-rules.tar.gz
+        url: https://snort.org/downloads/community/|community-rules.tar.gz|Community
+        eplicit: true
     ip-blacklists:
       - http://talosintel.com/feeds/ip-filter.blf
     path: /opt/bin/pulledpork.pl

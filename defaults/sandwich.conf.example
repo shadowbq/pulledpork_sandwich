@@ -11,7 +11,8 @@ CONFIG:
         url: https://www.snort.org/reg-rules/|snortrules-snapshot.tar.gz
         oinkcode: true
       community:
-        url: https://snort.org/downloads/community/|community-rules.tar.gz
+        url: https://snort.org/downloads/community/|community-rules.tar.gz|Community
+        explicit: true
     ip-blacklists:
       - http://talosintel.com/feeds/ip-filter.blf
       - http://malc0de.com/bl/IP_Blacklist.txt
