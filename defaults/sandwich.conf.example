@@ -16,6 +16,7 @@ CONFIG:
       - http://labs.snort.org/feeds/ip-filter.blf
       - http://malc0de.com/bl/IP_Blacklist.txt
       - http://www.malwaredomainlist.com/hostslist/ip.txt
+    path: /opt/bin/pulledpork.pl
     # Note that setting this value will disable all non-label rulesets (ET, etc)  
     # ruleset: security
 SENSORS:

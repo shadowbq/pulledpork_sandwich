@@ -1,3 +1,4 @@
+require 'pry'
 module Pulledpork_Sandwich
 
   # Provides a yaml configuration and validation for pulledpork_sandwich.
@@ -26,7 +27,10 @@ module Pulledpork_Sandwich
           exit 0
         else
           @config = SandwichConf.new(options[:sandwich_conf])
-          depcheck
+	  binding.pry
+          pulledpork_path = @config.config['CONFIG']['pulledpork']['path']
+          depcheck(pulledpork_path)
+
           @collection = SensorCollection.new
           
           if @config.config['CONFIG']['openvpn_log']
@@ -63,11 +67,12 @@ module Pulledpork_Sandwich
       print msg if @verbose 
     end
 
-    def depcheck
-      raise ShellExecutionError, "no such file: pulledpork.pl" unless which ('pulledpork.pl')
+    def depcheck(pulledpork_path)
+      raise ShellExecutionError, "no such file: pulledpork.pl" unless which(pulledpork_path)
     end
 
     def which(cmd)
+      return cmd if File.executable? cmd
       exts = ENV['PATHEXT'] ? ENV['PATHEXT'].split(';') : ['']
       ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
         exts.each { |ext|
@@ -85,7 +90,7 @@ module Pulledpork_Sandwich
       #check for scaffold of sensor.
       # Read config for sensorname, if not fail and tell user to write config entry.
 
-      pork = SandwichWrapper.new(sensor, oinkcode, pulledporkconf)
+      pork = SandwichWrapper.new(sensor, oinkcode, pulledporkconf, pulledpork_path)
 
       #Merge Global Policy with Sensor Policy
       verbose "m"

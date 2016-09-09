@@ -5,10 +5,11 @@ module Pulledpork_Sandwich
   # the packaging of the results into a tar-gz ball.
   class SandwichWrapper
 
-    def initialize(sensor, oinkcode, pulledpork)
+    def initialize(sensor, oinkcode, pulledpork, pulledpork_path)
       @sensor = sensor
       @oinkcode = oinkcode
       @pulledpork = pulledpork
+      @pulledpork_path = pulledpork_path
       @time_at = Time.now.to_i
       @pulledpork_version = '0.7.0'
     end
@@ -104,7 +105,7 @@ module Pulledpork_Sandwich
       # -P Process even if no new downloads
       # -T Process text based rules files only, i.e. DO NOT process so_rules
       # -c use explicit config file
-      stdout, stderr = shellex("pulledpork.pl -v -P -T -c #{BASEDIR}/etc/sensors/#{@sensor.name}/pulledpork.dyn.conf #{skipdownload}")
+      stdout, stderr = shellex("#{@pulledpork_path} -v -P -T -c #{BASEDIR}/etc/sensors/#{@sensor.name}/pulledpork.dyn.conf #{skipdownload}")
 
       File.open("#{BASEDIR}/log/#{@sensor.name}_pulledpork.#{@time_at}.log", 'w') do |exelog|
         exelog.puts stdout

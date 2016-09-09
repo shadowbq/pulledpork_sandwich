@@ -21,9 +21,11 @@ module Pulledpork_Sandwich
 
 	    #check to see if this host has a hypervisor 
 	    raise ErrorSandwichConfig "Missing oinkmaster code"  unless @config['CONFIG'].include? "oinkcode" 
+	    raise ErrorSandwichConfig "Missing pulledpork section"  unless @config['CONFIG'].include? "pulledpork" 
 	    @config['CONFIG']['debug'] ||= false
 	    @config['CONFIG']['verbose'] ||= false
 	    @config['CONFIG']['openvpnlog'] ||= false
+	    @config['CONFIG']['pulledpork']['path'] ||= 'pulledpork.pl'
 
 	    @config
 	  end
