@@ -45,10 +45,10 @@ module Pulledpork_Sandwich
       configfile.puts "sid_msg_version=1"
       configfile.puts ""
       @pulledpork['rules-urls'].each do |k,v|
-        if v['oinkcode'] 
+        if v['explicit'] == true
+          configfile.puts "rule_url=#{v['url']}"
+        elsif v['oinkcode'] 
           configfile.puts "rule_url=#{v['url']}|#{@oinkcode}"
-        else
-          configfile.puts "rule_url=#{v['url']}|blank"
         end  
       end
       @pulledpork['ip-blacklists'].each do |url|

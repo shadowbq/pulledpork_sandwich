@@ -21,7 +21,6 @@ $:.unshift(File.dirname(__FILE__))
 include Archive::Tar
 
 Bundler.require(:development)
-# binding.pry
 
 # Internal 
 module Pulledpork_Sandwich
