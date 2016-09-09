@@ -1,4 +1,3 @@
-require 'pry'
 module Pulledpork_Sandwich
 
   # Provides a yaml configuration and validation for pulledpork_sandwich.
@@ -27,7 +26,6 @@ module Pulledpork_Sandwich
           exit 0
         else
           @config = SandwichConf.new(options[:sandwich_conf])
-	  binding.pry
           pulledpork_path = @config.config['CONFIG']['pulledpork']['path']
           depcheck(pulledpork_path)
 
