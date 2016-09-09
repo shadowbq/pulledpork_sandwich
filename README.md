@@ -50,11 +50,9 @@ CONFIG:
         url: https://www.snort.org/reg-rules/|snortrules-snapshot.tar.gz
         oinkcode: true
       community:
-        url: https://s3.amazonaws.com/snort-org/www/rules/community/|community-rules.tar.gz
+        url: https://snort.org/downloads/community/|community-rules.tar.gz
     ip-blacklists:
-      - http://labs.snort.org/feeds/ip-filter.blf
-      - http://malc0de.com/bl/IP_Blacklist.txt
-      - http://www.malwaredomainlist.com/hostslist/ip.txt
+      - http://talosintel.com/feeds/ip-filter.blf
     path: /opt/bin/pulledpork.pl
     version: 0.7.1
     # Note that setting this value will disable all non-label rulesets (ET, etc)  
