@@ -26,8 +26,8 @@ module Pulledpork_Sandwich
           exit 0
         else
           @config = SandwichConf.new(options[:sandwich_conf])
-          pulledpork_path = @config.config['CONFIG']['pulledpork']['path']
-          depcheck(pulledpork_path)
+          @pulledpork_path = @config.config['CONFIG']['pulledpork']['path']
+          depcheck(@pulledpork_path)
 
           @collection = SensorCollection.new
           
@@ -88,7 +88,7 @@ module Pulledpork_Sandwich
       #check for scaffold of sensor.
       # Read config for sensorname, if not fail and tell user to write config entry.
 
-      pork = SandwichWrapper.new(sensor, oinkcode, pulledporkconf, pulledpork_path)
+      pork = SandwichWrapper.new(sensor, oinkcode, pulledporkconf, @pulledpork_path)
 
       #Merge Global Policy with Sensor Policy
       verbose "m"
