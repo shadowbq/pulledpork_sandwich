@@ -1,5 +1,7 @@
 #Pulledpork Sandwich
 
+[![Tags](https://img.shields.io/github/tag/shadowbq/pulledpork_sandwich.svg)](https://github.com/shadowbq/pulledpork_sandwich/releases)
+
 Smash, and layer up that pulledpork config to support multiple sensors.
 
 ![About](http://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Germantown_Commissary%2C_BBQ_Pork_Sandwich.jpg/320px-Germantown_Commissary%2C_BBQ_Pork_Sandwich.jpg) [1]
