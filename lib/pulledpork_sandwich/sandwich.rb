@@ -37,10 +37,6 @@ module Pulledpork_Sandwich
             @collection = @collection.build(@config.config['CONFIG'],@config.config['SENSORS']) 
           end
 
-	 require 'pry'
-         binding.pry
-
-          
           if !options[:global] 
             @collection.each do |sensor| 
               pulledpork(sensor, @config.config['CONFIG']['oinkcode'], @config.config['CONFIG']['pulledpork'], options[:skipdownload])

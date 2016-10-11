@@ -210,6 +210,12 @@ module Pulledpork_Sandwich
       cleanup = Dir["#{BASEDIR}/export/global_package.*.tgz"]
       tgz = Zlib::GzipWriter.new(File.open("#{BASEDIR}/export/global_package.#{@time_at}.tgz", 'wb'))
       Minitar.pack(Dir["#{BASEDIR}/export/global/*"], tgz)
+      Dir.glob("#{BASEDIR}/export/global/*").each do |globfile|
+        begin 
+          open("#{globfile}.md5", 'w') { |f| f.puts  Digest::MD5.file globfile }
+        rescue Errno::ENOENT
+        end
+      end
       FileUtils.cp("#{BASEDIR}/export/global_package.#{@time_at}.tgz", "#{BASEDIR}/archive/.")
       cleanup.each { |file| FileUtils.rm(file) }
     end
