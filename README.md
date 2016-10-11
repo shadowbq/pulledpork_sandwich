@@ -4,7 +4,7 @@
 
 Managing mulitple IDS sensor policies for an enterprise deployment can be difficult, whether it be SNORT, SURICATA, or SAGAN. If you have a single sensor, or similiar networks you can use a single policy for your IDS sensors. Using the traditional `pulledpork.pl` can assist you in fetching and modifing this policy. Over time, pruning and tuning becomes difficult to manage when you have more than one network and mulitple types of network traffic (VOIP vs BROADCAST vs traditional desktop). 
 
-Commercial solutions for some time have allowed for an order of precedence for default rules runs from the lowest context to the highest. `Pulledpork_sandwich` attempts to provide an environment where settings edited at the lowest sensor level to override settings at the global level. This ability allows for tuning of thresholds, disabling of signatures and regex signature modifications to happen at the sensor level.
+Commercial solutions for some time have allowed for an order of precedence for default rules to run from the lowest context to the highest. `Pulledpork_sandwich` attempts to provide an hierarchical policy layering environment where settings edited at the lowest sensor level are allowed to override settings at the global level. This ability allows for tuning of thresholds, disabling of signatures, and regex signature modifications to happen at the most specific point.
 
 Smash, and layer up that pulledpork config to support multiple sensors!
 
@@ -131,6 +131,8 @@ $> pulledpork_sandwich --scaffold=DMZ
 ```
 
 ## Policy Layering
+
+`pulledpork.pl` does not support threshold configuration changes, but `pulledpork_sandwich` does support the layering and distribution of threshold files.
 
 ### TUNING
 
