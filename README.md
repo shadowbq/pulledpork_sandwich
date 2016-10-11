@@ -147,6 +147,12 @@ Examples:
 * [Disable SID](https://pulledpork.googlecode.com/svn/trunk/etc/disablesid.conf)
 * [Modify SID](https://pulledpork.googlecode.com/svn/trunk/etc/modifysid.conf)
 
+### Global
+
+The global configuration layer is built everytime a new policy is built. The global policy layer can be tested and built without all the sensor policy layers for testing or exportation to a index system like SNORBY. 
+
+When running the global only build,  `etc\global.*.conf` only are used in combination with pulledpork to create the `export\global\*` files.
+
 ## Advanced Runtime Options
 
 Having problems with your path? Run from `/opt/pulledpork_sandwich`
