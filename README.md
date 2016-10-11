@@ -2,6 +2,8 @@
 
 [![Tags](https://img.shields.io/github/tag/shadowbq/pulledpork_sandwich.svg)](https://github.com/shadowbq/pulledpork_sandwich/releases)
 
+Managing mulitple IDS sensor policies for an enterprise deployment can be difficult. If you have a single sensor, or similiar networks you can use a single policy for your IDS sensors. Using the traditional `pulledpork.pl` can assist you in fetching and modifing this policy. Over time, pruning and tuning becomes difficult to manage when you have more than one network and mulitple types of network traffic (VOIP vs BROADCAST vs traditional desktop). Commercial solutions allow for an order of precedence for default rules runs from the lowest context to the highest: settings edited at the lowest sensor level override settings at the global level.
+
 Smash, and layer up that pulledpork config to support multiple sensors.
 
 ![About](http://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Germantown_Commissary%2C_BBQ_Pork_Sandwich.jpg/320px-Germantown_Commissary%2C_BBQ_Pork_Sandwich.jpg) [1]
@@ -86,7 +88,8 @@ An Oinkmaster Code may be obtained by logging in to the official Snort website, 
 ## RUNTIME
 
 ```shell
-$ ./bin/pulledpork_sandwich --help
+Usage: pulledpork_sandwich [OPTIONS]
+
 Deployment Modes::
     -n, --nopush                     Do not push via scp the new packages
                                        Default: false
@@ -100,8 +103,9 @@ Options::
 
 Alt Modes::
     -s, --scaffold=                  scaffold a configuration for a sensor named xxx
-        --purge                      Delete all logs, tmps
-        --clobber                    Delete all logs, tmps, archives, and exports
+    -g, --global-only                Only run pulledpork_sandwich for global configuration
+        --purge                      Deletes log, tmp
+        --clobber                    Deletes log, tmp, archive, and export
     -h, --help                       Display this screen
 ```
 
