@@ -207,7 +207,9 @@ module Pulledpork_Sandwich
     
       # Dont rely on backup / backup_file from pulledpork to build tarball.
     def package_global
-      cleanup = Dir["#{BASEDIR}/export/global_package.*.tgz"]
+      cleanup = Dir["#{BASEDIR}/export/global/*.md5"]
+      cleanup.each { |file| FileUtils.rm(file) }
+      tmp = Dir["#{BASEDIR}/export/global_package.*.tgz"]
       tgz = Zlib::GzipWriter.new(File.open("#{BASEDIR}/export/global_package.#{@time_at}.tgz", 'wb'))
       Minitar.pack(Dir["#{BASEDIR}/export/global/*"], tgz)
       Dir.glob("#{BASEDIR}/export/global/*").each do |globfile|
@@ -217,7 +219,7 @@ module Pulledpork_Sandwich
         end
       end
       FileUtils.cp("#{BASEDIR}/export/global_package.#{@time_at}.tgz", "#{BASEDIR}/archive/.")
-      cleanup.each { |file| FileUtils.rm(file) }
+      tmp.each { |file| FileUtils.rm(file) }
     end
 
   end
