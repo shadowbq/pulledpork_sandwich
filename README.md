@@ -2,9 +2,11 @@
 
 [![Tags](https://img.shields.io/github/tag/shadowbq/pulledpork_sandwich.svg)](https://github.com/shadowbq/pulledpork_sandwich/releases)
 
-Managing mulitple IDS sensor policies for an enterprise deployment can be difficult, whether it be SNORT, SURICATA, or SAGAN. If you have a single sensor, or similiar networks you can use a single policy for your IDS sensors. Using the traditional `pulledpork.pl` can assist you in fetching and modifing this policy. Over time, pruning and tuning becomes difficult to manage when you have more than one network and mulitple types of network traffic (VOIP vs BROADCAST vs traditional desktop). Commercial solutions allow for an order of precedence for default rules runs from the lowest context to the highest: settings edited at the lowest sensor level override settings at the global level.
+Managing mulitple IDS sensor policies for an enterprise deployment can be difficult, whether it be SNORT, SURICATA, or SAGAN. If you have a single sensor, or similiar networks you can use a single policy for your IDS sensors. Using the traditional `pulledpork.pl` can assist you in fetching and modifing this policy. Over time, pruning and tuning becomes difficult to manage when you have more than one network and mulitple types of network traffic (VOIP vs BROADCAST vs traditional desktop). 
 
-Smash, and layer up that pulledpork config to support multiple sensors.
+Commercial solutions for some time have allowed for an order of precedence for default rules runs from the lowest context to the highest. `Pulledpork_sandwich` attempts to provide an environment where settings edited at the lowest sensor level to override settings at the global level. This ability allows for tuning of thresholds, disabling of signatures and regex signature modifications to happen at the sensor level.
+
+Smash, and layer up that pulledpork config to support multiple sensors!
 
 ![About](http://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Germantown_Commissary%2C_BBQ_Pork_Sandwich.jpg/320px-Germantown_Commissary%2C_BBQ_Pork_Sandwich.jpg) [1]
 
@@ -109,18 +111,41 @@ Alt Modes::
     -h, --help                       Display this screen
 ```
 
-Adding A New Sensor.
+## Adding A New Sensor.
+
+Each sensors and its configuration must be added to the `sandwich.conf` file in YAML format. 
+
+```yaml
+DMZ:
+    ipaddress: 10.0.0.3
+    notes: "DMZ Sensor"
+    hostname: dmz.corp.com
+    distro: FreeBSD-8.1
+    snort_version: 2.9.7.6
+```    
+
+Once you have added the correct stanza in the configuration file, you can scaffold the directories and configurations by running the follow command:
 
 ```shell
-$> pulledpork_sandwich --scaffold=Sample
+$> pulledpork_sandwich --scaffold=DMZ
 ```
 
-Running in verbose mode. (See #Logs)
+## Policy Layering
 
-```shell
-$> pulledpork_sandwich --nopush -v -k 
-Sensor - Sample :m.p.r.z.done
-```
+### TUNING
+
+Edit the `etc\global.*.conf` files if you want to affect all the sensors.
+
+Edit the `etc\sensors\<named>\*.conf` files if you want to affect a specific sensor.
+
+Please read the pulledpork documentation on googlecode for instructions on how write the conf files.
+
+Examples: 
+
+* [Enable SID](https://pulledpork.googlecode.com/svn/trunk/etc/enablesid.conf)
+* [Drop SID](https://pulledpork.googlecode.com/svn/trunk/etc/dropsid.conf)
+* [Disable SID](https://pulledpork.googlecode.com/svn/trunk/etc/disablesid.conf)
+* [Modify SID](https://pulledpork.googlecode.com/svn/trunk/etc/modifysid.conf)
 
 ## Advanced Runtime Options
 
@@ -137,66 +162,13 @@ Skipping SSL Hostname Validation (pulledpork.pl ENV)
 $> PERL_LWP_SSL_VERIFY_HOSTNAME=0 ./bin/pulledpork_sandwich -n -v
 ```
 
-## SNORT.ORG (TALOS) EOL
+Running in verbose mode. (See #Logs)
 
-It's important to understand the EOL policy of the Cisco TALOS group, and what signatures they support. 
+```shell
+$> pulledpork_sandwich --nopush -v -k 
+Sensor - Sample :m.p.r.z.done
+```
 
-https://snort.org/eol
-
-Ensure your version of snort listed in `sandwich.conf` is under support. 
-
-``` snort_version: 2.9.7.0 ```
-
-## TUNE
-
-Edit the `etc\global.*.conf` files if you want to affect all the sensors.
-
-Edit the `etc\sensors\<named>\*.conf` files if you want to affect a specific sensor.
-
-Please read the pulledpork documentation on googlecode for instructions on how write the conf files.
-
-Examples: 
-
-* [Enable SID](https://pulledpork.googlecode.com/svn/trunk/etc/enablesid.conf)
-* [Drop SID](https://pulledpork.googlecode.com/svn/trunk/etc/dropsid.conf)
-* [Disable SID](https://pulledpork.googlecode.com/svn/trunk/etc/disablesid.conf)
-* [Modify SID](https://pulledpork.googlecode.com/svn/trunk/etc/modifysid.conf)
-
-### Generally GEN1 Accepted SID Ranges
-SourceFire / Snort.org: 
-
-* If the number is less than 1000000, it is a SourceFire rule 
-* 1-3464 Old Snort GPL sigs (moved to the 2100000 sid range ) 
-
-Local Rules:
-
-* 1000000-1999999 Reserved for Local Use -- Put your custom rules in this range to avoid conflicts
-
-Emergin Threats:
-
-* 2000000-2099999 Emerging Threats Open Rulesets
-* 2100000-2103999 Forked ET Versions of the Original Snort GPL Signatures Originally sids 3464 and prior, forked to be maintained
-
-Converted to Suricata:
-
-* 2200000-2200999 Suricata Decoder Events
-* 2210000-2210999 Suricata Stream Events
-* 2220000-2299999 Suricata Reserved
-* 2800000-2809999 Emerging Threats Pro Full Coverage Ruleset -- ETProRules
-
-Dynamicly Updated Rules:
-
-* 2400000-2400999 SpamHaus DROP List — Updated Daily -- SpamHausDROPList
-* 2402000-2402299 Dshield Top Attackers Rules — Updated Daily -- DshieldTopAttackers
-* 2403300-2403499 CIArmy.com Top Attackers Rules — Updated Daily - See http://www.ciarmy.com#list -- CiArmy?
-* 2404000-2404299 Shadowserver.org Bot C&C List — Updated Daily -- BotCC
-* 2405000-2405999 Shadowserver.org Bot C&C List Grouped by Port — Updated Daily -- BotCC
-* 2406000-2406999 Russian Business Network Known Nets --- OBSOLETED -- RussianBusinessNetwork
-* 2408000-2408499 Russian Business Network Known Malvertisers --- OBSOLETED -- RussianBusinessNetwork
-* 2520000-2521999 Tor Exit Nodes List Updated Daily -- TorRules
-* 2522000-2525999 Tor Relay Nodes List (NOT Exit nodes) Updated Daily -- TorRules
-
-[Generally Accepted SID Ranges](http://doc.emergingthreats.net/bin/view/Main/SidAllocation)
 
 ### Order of Operations
 
@@ -250,6 +222,7 @@ and then running `pulledpork_sandwich` on a copied default `sandwich.conf`.
 ```Shell
 .
 ├── archive
+│   ├── global_package.1397521079.tgz
 │   └── Sample_package.1397421075.tgz
 ├── bin
 │   └── pulledpork_sandwich
@@ -260,7 +233,6 @@ and then running `pulledpork_sandwich` on a copied default `sandwich.conf`.
 │   ├── global.localrules.conf
 │   ├── global.modifysid.conf
 │   ├── global.threshold.conf
-│   ├── sandwich.conf
 │   ├── sandwich.conf.example
 │   ├── sensors
 │   │   └── Sample
@@ -273,6 +245,7 @@ and then running `pulledpork_sandwich` on a copied default `sandwich.conf`.
 │   └── snort.conf.example
 ├── etc
 │   ├── global.disablesid.conf
+│   ├── global.pulledpork.conf
 │   ├── global.dropsid.conf
 │   ├── global.enablesid.conf
 │   ├── global.localrules.conf
@@ -297,6 +270,10 @@ and then running `pulledpork_sandwich` on a copied default `sandwich.conf`.
 │   │       └── threshold.conf
 │   └── snort.conf
 ├── export
+|   └── global
+│       ├── sid-msg.map
+│       ├── snort.rules
+│       └── threshold.conf
 │   └── sensors
 │       ├── Sample
 │       │   ├── sid-msg.map
@@ -330,6 +307,53 @@ and then running `pulledpork_sandwich` on a copied default `sandwich.conf`.
 
 ```
 
+### Generally GEN1 Accepted SID Ranges
+SourceFire / Snort.org: 
+
+* If the number is less than 1000000, it is a SourceFire rule 
+* 1-3464 Old Snort GPL sigs (moved to the 2100000 sid range ) 
+
+Local Rules:
+
+* 1000000-1999999 Reserved for Local Use -- Put your custom rules in this range to avoid conflicts
+
+Emergin Threats:
+
+* 2000000-2099999 Emerging Threats Open Rulesets
+* 2100000-2103999 Forked ET Versions of the Original Snort GPL Signatures Originally sids 3464 and prior, forked to be maintained
+
+Converted to Suricata:
+
+* 2200000-2200999 Suricata Decoder Events
+* 2210000-2210999 Suricata Stream Events
+* 2220000-2299999 Suricata Reserved
+* 2800000-2809999 Emerging Threats Pro Full Coverage Ruleset -- ETProRules
+
+Dynamicly Updated Rules:
+
+* 2400000-2400999 SpamHaus DROP List — Updated Daily -- SpamHausDROPList
+* 2402000-2402299 Dshield Top Attackers Rules — Updated Daily -- DshieldTopAttackers
+* 2403300-2403499 CIArmy.com Top Attackers Rules — Updated Daily - See http://www.ciarmy.com#list -- CiArmy?
+* 2404000-2404299 Shadowserver.org Bot C&C List — Updated Daily -- BotCC
+* 2405000-2405999 Shadowserver.org Bot C&C List Grouped by Port — Updated Daily -- BotCC
+* 2406000-2406999 Russian Business Network Known Nets --- OBSOLETED -- RussianBusinessNetwork
+* 2408000-2408499 Russian Business Network Known Malvertisers --- OBSOLETED -- RussianBusinessNetwork
+* 2520000-2521999 Tor Exit Nodes List Updated Daily -- TorRules
+* 2522000-2525999 Tor Relay Nodes List (NOT Exit nodes) Updated Daily -- TorRules
+
+[Generally Accepted SID Ranges](http://doc.emergingthreats.net/bin/view/Main/SidAllocation)
+
+## SNORT.ORG (The Talos Group) - EOL POLICY
+
+It's important to understand the EOL policy of the Cisco TALOS group, and what signatures they support. 
+
+https://snort.org/eol
+
+Ensure your version of snort listed in `sandwich.conf` is under support. 
+
+``` 
+snort_version: 2.9.7.0 
+```
 
 ## LICENSE
 
