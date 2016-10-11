@@ -37,9 +37,23 @@ module Pulledpork_Sandwich
             @collection = @collection.build(@config.config['CONFIG'],@config.config['SENSORS']) 
           end
 
-          @collection.each do |sensor| 
-            pulledpork(sensor, @config.config['CONFIG']['oinkcode'], @config.config['CONFIG']['pulledpork'], options[:skipdownload])
-          end
+	 require 'pry'
+         binding.pry
+
+          
+          if !options[:global] 
+            @collection.each do |sensor| 
+              pulledpork(sensor, @config.config['CONFIG']['oinkcode'], @config.config['CONFIG']['pulledpork'], options[:skipdownload])
+            end
+          end 
+
+          @global = @collection.first.clone
+          @global.hostname="global"
+          @global.ipaddress="0.0.0.0"
+          @global.name = "global"
+          @global.notes = "global config"
+
+          pulledpork_global(@global, @config.config['CONFIG']['oinkcode'], @config.config['CONFIG']['pulledpork'], options[:skipdownload])
         end 
       
       rescue ErrorSandwichConfig => e
@@ -121,6 +135,33 @@ module Pulledpork_Sandwich
       verbose "done\n"
     end
 
+     ## Sensor loop
+    def pulledpork_global(global, oinkcode, pulledporkconf, skipdownload)
+      verbose "Building Global - #{global.name} :"
+      pork = SandwichWrapper.new(global, oinkcode, pulledporkconf, @pulledpork_path)
+
+      #Dynamic Create PulledPork Config to file
+      verbose "p"
+      pork.create_config_global
+      verbose "."
+
+      #Run Pulled Pork for each Sensor
+      verbose "r"
+      if skipdownload
+        pork.trigger_global('-n')
+      else
+        pork.trigger_global
+      end
+      verbose "."
+
+      #TAR.GZ results
+      verbose "z"
+      pork.package_global
+      verbose "."
+    
+      verbose "done\n"
+    end
+
     #Make all the skelton directory for the sensor
     def scaffold(sensor)
       
@@ -141,6 +182,7 @@ module Pulledpork_Sandwich
         FileUtils.cp_r("#{BASEDIR}/defaults/sensors/Sample/.", "#{BASEDIR}/etc/sensors/#{sensor}")
       end  
       FileUtils.mkdir_p("#{BASEDIR}/export/sensors/#{sensor}")
+      FileUtils.mkdir_p("#{BASEDIR}/export/global")
       #FileUtils.mkdir_p("#{BASEDIR}/export/sensors/#{sensor}/so_rules/")
       #FileUtils.touch("#{BASEDIR}/export/sensors/#{sensor}/so_rules.rules")
       #FileUtils.touch("#{BASEDIR}/log/#{sensor}_sid_changes.log")
@@ -172,9 +214,15 @@ module Pulledpork_Sandwich
         FileUtils.remove_entry_secure("#{BASEDIR}/export/sensors")
       rescue Errno::ENOENT
       end  
+
+      begin
+        FileUtils.remove_entry_secure("#{BASEDIR}/export/global")
+      rescue Errno::ENOENT
+      end
       
       FileUtils.mkdir_p("#{BASEDIR}/archive")
       FileUtils.mkdir_p("#{BASEDIR}/export/sensors")
+      FileUtils.mkdir_p("#{BASEDIR}/export/global")
     end
 
   end

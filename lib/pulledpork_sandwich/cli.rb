@@ -57,6 +57,12 @@ module Pulledpork_Sandwich
           options[:scaffold] = value
         end
 
+
+        opt.on("-g","--global-only","Only run pulledpork_sandwich for global configuration") do 
+          options[:global] = true
+        end
+
+
         opt.on("--purge","Deletes log, tmp") do
           options[:purge] = true
         end
@@ -71,7 +77,7 @@ module Pulledpork_Sandwich
       begin
         raise unless ARGV.size > 0
         opt_parser.parse!
-        exclusive_options = [:scaffold, :purge, :clobber]
+        exclusive_options = [:scaffold, :purge, :clobber, :global]
 
         if (exclusive_options.collect { |item| item if options.include? item }.compact).length > 1
           puts "Error: Mutually Exclusive options were selected"

@@ -124,6 +124,96 @@ module Pulledpork_Sandwich
       cleanup.each { |file| FileUtils.rm(file) }
     end
 
+    def trigger_global (skipdownload='')
+      FileUtils.mkdir_p("#{BASEDIR}/export/global")
+
+      #Export files not processed by pulledpork
+      ['threshold','whitelist'].each do |passthrough|
+        FileUtils.cp("#{BASEDIR}/etc/global.#{passthrough}.conf", "#{BASEDIR}/export/global/#{passthrough}.conf")
+      end
+
+      # Pulled pork Exection notes:
+      # -v Verbose output
+      # -P Process even if no new downloads
+      # -T Process text based rules files only, i.e. DO NOT process so_rules
+      # -c use explicit config file
+      stdout, stderr = shellex("#{@pulledpork_path} -v -P -T -c #{BASEDIR}/etc/global.pulledpork.conf #{skipdownload}")
+
+      File.open("#{BASEDIR}/log/global_pulledpork.#{@time_at}.log", 'w') do |exelog|
+        exelog.puts stdout
+      end
+      File.open("#{BASEDIR}/log/global_pulledpork.#{@time_at}.err", 'w') do |exelog|
+        exelog.puts stderr
+      end
+
+    end
+
+    
+    def create_config_global
+      configfile = File.open("#{BASEDIR}/etc/global.pulledpork.conf", 'w')
+      configfile.puts "#Stat"
+      configfile.puts "distro=#{@sensor.distro}"
+      configfile.puts "snort_version=#{@sensor.snort_version}"
+      configfile.puts "version=#{@pulledpork['version']}"
+      configfile.puts "ignore=deleted.rules,experimental.rules"
+      configfile.puts "sid_msg_version=1"
+      configfile.puts ""
+      @pulledpork['rules-urls'].each do |k,v|
+        if v['explicit'] == true
+          configfile.puts "rule_url=#{v['url']}"
+        elsif v['oinkcode'] 
+          configfile.puts "rule_url=#{v['url']}|#{@oinkcode}"
+        end  
+      end
+      @pulledpork['ip-blacklists'].each do |url|
+        configfile.puts "rule_url=#{url}|IPBLACKLIST|open"
+      end
+      configfile.puts "temp_path=#{BASEDIR}/tmp"
+      configfile.puts ""
+      configfile.puts "# Imports"
+      configfile.puts "snort_path=/usr/local/bin/snort"
+      configfile.puts "config_path=#{BASEDIR}/etc/snort.conf"
+      configfile.puts ""
+      configfile.puts "# Modifiers"
+      configfile.puts "local_rules=#{BASEDIR}/etc/global.localrules.conf"
+      configfile.puts "enablesid=#{BASEDIR}/etc/global.enablesid.conf"
+      configfile.puts "dropsid=#{BASEDIR}/etc/global.dropsid.conf"
+      configfile.puts "disablesid=#{BASEDIR}/etc/global.disablesid.conf"
+      configfile.puts "modifysid=#{BASEDIR}/etc/global.modifysid.conf"
+      configfile.puts ""
+      configfile.puts "# Exports"
+      configfile.puts "rule_path=#{BASEDIR}/export/global/snort.rules"
+      configfile.puts "sid_msg=#{BASEDIR}/export/global/sid-msg.map"
+      configfile.puts "# sorule_path=#{BASEDIR}/export/global/so_rules/"
+      configfile.puts "sid_changelog=#{BASEDIR}/log/global_sid_changes.#{@time_at}.log"
+      configfile.puts ""
+      configfile.puts "# ClearText Combined IP Blacklist"
+      configfile.puts "black_list=#{BASEDIR}/export/global/combined.blacklist"
+      configfile.puts ""
+      configfile.puts "# Path to output IPRVersion.dat"
+      configfile.puts "IPRVersion=#{BASEDIR}/export/global/combined."
+      configfile.puts ""
+      configfile.puts "# Short circuit call to control bin"
+      configfile.puts "snort_control=true"
+      configfile.puts ""
+      if @sensor.ips_policy 
+        configfile.puts "# RuleSet (security, balanced, connectivity)"
+        configfile.puts "ips_policy=#{@sensor.policy}"
+        configfile.puts ""
+      end  
+      configfile.close
+
+    end
+    
+      # Dont rely on backup / backup_file from pulledpork to build tarball.
+    def package_global
+      cleanup = Dir["#{BASEDIR}/export/global_package.*.tgz"]
+      tgz = Zlib::GzipWriter.new(File.open("#{BASEDIR}/export/global_package.#{@time_at}.tgz", 'wb'))
+      Minitar.pack(Dir["#{BASEDIR}/export/global/*"], tgz)
+      FileUtils.cp("#{BASEDIR}/export/global_package.#{@time_at}.tgz", "#{BASEDIR}/archive/.")
+      cleanup.each { |file| FileUtils.rm(file) }
+    end
+
   end
 
 end
