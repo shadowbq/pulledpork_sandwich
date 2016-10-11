@@ -2,7 +2,7 @@
 
 [![Tags](https://img.shields.io/github/tag/shadowbq/pulledpork_sandwich.svg)](https://github.com/shadowbq/pulledpork_sandwich/releases)
 
-Managing mulitple IDS sensor policies for an enterprise deployment can be difficult. If you have a single sensor, or similiar networks you can use a single policy for your IDS sensors. Using the traditional `pulledpork.pl` can assist you in fetching and modifing this policy. Over time, pruning and tuning becomes difficult to manage when you have more than one network and mulitple types of network traffic (VOIP vs BROADCAST vs traditional desktop). Commercial solutions allow for an order of precedence for default rules runs from the lowest context to the highest: settings edited at the lowest sensor level override settings at the global level.
+Managing mulitple IDS sensor policies for an enterprise deployment can be difficult, whether it be SNORT, SURICATA, or SAGAN. If you have a single sensor, or similiar networks you can use a single policy for your IDS sensors. Using the traditional `pulledpork.pl` can assist you in fetching and modifing this policy. Over time, pruning and tuning becomes difficult to manage when you have more than one network and mulitple types of network traffic (VOIP vs BROADCAST vs traditional desktop). Commercial solutions allow for an order of precedence for default rules runs from the lowest context to the highest: settings edited at the lowest sensor level override settings at the global level.
 
 Smash, and layer up that pulledpork config to support multiple sensors.
 
